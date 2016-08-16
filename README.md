@@ -40,4 +40,4 @@ In phase three, piece rotation will be implemented. Alone with piece rotation, t
 
 [menu-screen]: ./docs/wireframes/menu-screen.jpg
 [game-screen]: ./docs/wireframes/game-screen.jpg
-[game-over-screen]: ./docs/wireframes/game-over-screen.jpg
+[game-over-screen]: ./docs/wireframes/gos.jpg
