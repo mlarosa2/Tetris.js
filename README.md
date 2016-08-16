@@ -38,6 +38,6 @@ During phase two, pieces will be brought to life and respond to keyboard input. 
 
 In phase three, piece rotation will be implemented. Alone with piece rotation, the game will become more difficult as the score builds up.
 
-[menu-screen]: ./docs/wireframes/menu-screen.jpg
-[game-screen]: ./docs/wireframes/game-screen.jpg
-[game-over-screen]: ./docs/wireframes/game-over-screen.jpg
+[menu-screen]: ./docs/wireframes/menu-screen.jpg =250x
+[game-screen]: ./docs/wireframes/game-screen.jpg =250x
+[game-over-screen]: ./docs/wireframes/game-over-screen.jpg =250x
