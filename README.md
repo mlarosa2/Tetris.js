@@ -12,6 +12,17 @@ Tetris.js will be built with vanilla JavaScript and the HTML5 Canvas API.
 
 ##Wireframes
 
+###Menu Screen
+
+![menu-screen]
+
+###Game Screen
+
+![game-screen]
+
+###Game Over Screen
+
+![game-over-screen]
 
 ##Implementation Timeline
 
