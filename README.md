@@ -14,15 +14,15 @@ Tetris.js will be built with vanilla JavaScript and the HTML5 Canvas API.
 
 ###Menu Screen
 
-![](./docs/wireframes/menu-screen.jpg | width=250)
+![menu-screen]
 
 ###Game Screen
 
-![](./docs/wireframes/game-screen.jpg | width=250)
+![game-screen]
 
 ###Game Over Screen
 
-![](./docs/wireframes/game-over-screen.jpg | width=250)
+![game-over-screen]
 
 ##Implementation Timeline
 
@@ -38,6 +38,6 @@ During phase two, pieces will be brought to life and respond to keyboard input. 
 
 In phase three, piece rotation will be implemented. Alone with piece rotation, the game will become more difficult as the score builds up.
 
-[menu-screen]: ./docs/wireframes/menu-screen.jpg | width=250
-[game-screen]: ./docs/wireframes/game-screen.jpg | width=250
-[game-over-screen]: ./docs/wireframes/game-over-screen.jpg | width=250
+[menu-screen]: ./docs/wireframes/menu-screen.jpg
+[game-screen]: ./docs/wireframes/game-screen.jpg
+[game-over-screen]: ./docs/wireframes/game-over-screen.jpg
