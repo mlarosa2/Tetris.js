@@ -3,7 +3,7 @@ const colorConstants = {
   BLUE   : '#00F',
   GREEN  : '#0F0',
   YELLOW : '#FFFF00',
-  PURPLE : '#551A8B',
+  PURPLE : '#BF5FFF',
   ORANGE : '#FFA500'
 }
 

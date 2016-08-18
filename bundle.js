@@ -45,8 +45,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	const Game     = __webpack_require__(1);
-	const GameView = __webpack_require__(2);
-	const Board = __webpack_require__(3);
+	const GameView = __webpack_require__(6);
+	const Board = __webpack_require__(2);
 	
 	document.addEventListener("DOMContentLoaded", function () {
 	  const canvas  = document.getElementById('canvas');
@@ -62,9 +62,13 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Board = __webpack_require__(3);
-	const Square = __webpack_require__(4);
-	
+	const Board  = __webpack_require__(2);
+	const Square = __webpack_require__(3);
+	const Line   = __webpack_require__(7);
+	const LeftL  = __webpack_require__(8);
+	const RightL = __webpack_require__(9);
+	const LeftZ  = __webpack_require__(10);
+	const RightZ = __webpack_require__(11);
 	
 	const Game = function () {
 	  this.board  = new Board();
@@ -75,31 +79,48 @@
 	Game.BG_COLOR = '#FFFFFF';
 	Game.DIM_X = 300;
 	Game.DIM_Y = 600;
-	Game.FPS = 32;
-	Game.PIECES = {
-	  1 : new Square()
-	};
+	Game.FALL_RATE = 2;
 	
 	Game.prototype.randomPiece = function () {
-	  return Game.PIECES[Math.floor(Math.random() * (1) + 1)]
+	  const choose = Math.floor(Math.random() * (6 - 1) + 1);
+	  switch (choose) {
+	    case 1:
+	      return new Square();
+	      break;
+	    case 2:
+	      return new Line();
+	      break;
+	    case 3:
+	      return new LeftL();
+	      break;
+	    case 4:
+	      return new RightL();
+	      break;
+	    case 5:
+	      return new LeftZ();
+	      break;
+	    case 6:
+	      return new RightZ();
+	      break;
+	  }
 	};
 	
 	Game.prototype.addPiece = function () {
 	  let piece = this.randomPiece();
 	  this.pieces.push(piece);
-	  this.board.addPiece(piece);
 	};
 	
 	Game.prototype.draw = function (ctx) {
 	  ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
 	  ctx.fillStyle = Game.BG_COLOR;
 	  ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+	  ctx.fillStyle = '#f00'
 	
-	  for (let i = 4; i < 24; i++) {
-	    for (let j = 0; j < 10; j++) {
-	      ctx.strokeRect(j * 30, i * 30, 30, 30)
-	    }
-	  }
+	  // for (let i = 4; i < 24; i++) {
+	  //  for (let j = 0; j < 10; j++) {
+	  //    ctx.strokeRect(j * 30, i * 30, 30, 30)
+	  //  }
+	  // }
 	
 	  this.pieces.forEach( piece => {
 	    piece.draw(ctx);
@@ -108,22 +129,23 @@
 	
 	Game.prototype.movePiece = function (delta) {
 	  const piece = this.pieces[this.pieces.length - 1];
-	  piece.location.forEach( block => {
-	    this.board.boardAsArray[block[0]][block[1]] = [];
-	    block[1] += 1;
-	  });
-	
-	  piece.location.forEach( block => {
-	    this.board.boardAsArray[block[0]][block[1]] = piece.color;
-	  });
-	
+	  const board = this.board;
+	  for (let i = 0; i < piece.location.length; i++) {
+	    piece.location[i][1] += Game.FALL_RATE;
+	  }
 	};
 	
 	Game.prototype.step = function (delta) {
-	  if (this.pieces.length > 0 && this.pieces[this.pieces.length - 1].set === false) {
-	    this.movePiece(delta);
-	  } else {
+	  const lastPiece = this.pieces[this.pieces.length - 1];
+	  if (this.pieces.length == 0) {
 	    this.addPiece();
+	  } else {
+	    if (this.pieces.length > 0 && !this.board.isNextRowSet(lastPiece)) {
+	      this.movePiece(delta);
+	    } else {
+	      this.board.addPiece(lastPiece);
+	      this.addPiece();
+	    }
 	  }
 	};
 	
@@ -135,12 +157,200 @@
 /* 2 */
 /***/ function(module, exports) {
 
+	const boardAsArray = [
+	// 0   1   2   3   4   5   6   7   8    9
+	  [[], [], [], [], [], [], [], [], [], []], // 0
+	  [[], [], [], [], [], [], [], [], [], []], // 1
+	  [[], [], [], [], [], [], [], [], [], []], // 2
+	  [[], [], [], [], [], [], [], [], [], []], // 3
+	  [[], [], [], [], [], [], [], [], [], []], // 4
+	  [[], [], [], [], [], [], [], [], [], []], // 5
+	  [[], [], [], [], [], [], [], [], [], []], // 6
+	  [[], [], [], [], [], [], [], [], [], []], // 7
+	  [[], [], [], [], [], [], [], [], [], []], // 8
+	  [[], [], [], [], [], [], [], [], [], []], // 9
+	  [[], [], [], [], [], [], [], [], [], []], // 10
+	  [[], [], [], [], [], [], [], [], [], []], // 11
+	  [[], [], [], [], [], [], [], [], [], []], // 12
+	  [[], [], [], [], [], [], [], [], [], []], // 13
+	  [[], [], [], [], [], [], [], [], [], []], // 14
+	  [[], [], [], [], [], [], [], [], [], []], // 15
+	  [[], [], [], [], [], [], [], [], [], []], // 16
+	  [[], [], [], [], [], [], [], [], [], []], // 17
+	  [[], [], [], [], [], [], [], [], [], []], // 18
+	  [[], [], [], [], [], [], [], [], [], []], // 19
+	  [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
+	];
+	
+	
+	const Board = function () {}
+	
+	Board.prototype.isNextRowSet = function (piece) {
+	  for (let i = 0; i < piece.location.length; i++) {
+	    let column = Math.floor(piece.location[i][0] / 30);
+	    let row = Math.floor(piece.location[i][1] / 30) + 1;
+	    column > 9 ? column = 9 : column;
+	    row < 0 ? row = 0 : row;
+	    if (boardAsArray[row][column] === undefined) {
+	      console.log(row);
+	      console.log(column);
+	    }
+	    if (boardAsArray[row][column].length > 0) {
+	      return true;
+	    }
+	  }
+	
+	  return false;
+	};
+	
+	Board.prototype.addPiece = function (piece) {
+	  piece.location.forEach( block => {
+	    const column = block[0] / 30;
+	    const row    = Math.floor(block[1] / 30);
+	    boardAsArray[row][column] = [piece.color];
+	  });
+	};
+	
+	module.exports = Board;
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
+	
+	const Square = function () {
+	  Piece.call(this);
+	  this.color = colorConstants.RED;
+	  this.location = [
+	    [150, -30],
+	    [120, -30],
+	    [150, -60],
+	    [120, -60]
+	  ];
+	}
+	
+	function Surrogate() {};
+	Surrogate.prototype = Piece.prototype;
+	Square.prototype = new Surrogate();
+	
+	module.exports = Square;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	const PIECE_SIZE = 30;
+	const MOVES = {
+	  LEFT  : "left",
+	  RIGHT : "right",
+	  DOWN  : "down"
+	}
+	const Piece = function () {
+	  this.set = false;
+	  this.color = null;
+	  this.location = [];
+	};
+	Piece.prototype.move = function(direction) {
+	  switch (direction) {
+	    case MOVES.RIGHT:
+	    for (let j = 0; j < this.location.length; j++) {
+	      if (this.location[j][0] >= 270) {
+	        return;
+	      }
+	    }
+	    for (let i = 0; i < this.location.length; i++) {
+	      if (this.location[i][0] <= 270) {
+	        this.location[i][0] += 30;
+	      }
+	    }
+	    break;
+	    case MOVES.LEFT:
+	      for (let j = 0; j < this.location.length; j++) {
+	        if (this.location[j][0] <= 0) {
+	          return;
+	        }
+	      }
+	      for (let i = 0; i < this.location.length; i++) {
+	        if (this.location[i][0] >= 0) {
+	          this.location[i][0] -= 30;
+	        }
+	      }
+	      break;
+	      case MOVES.DOWN:
+	        for (let j = 0; j < this.location.length; j++) {
+	          if (this.location[j][1] <= 0) {
+	            return;
+	          }
+	        }
+	        for (let i = 0; i < this.location.length; i++) {
+	          this.location[i][1] += 10;
+	        }
+	        break;
+	  }
+	},
+	Piece.prototype.rotateRight = function () {};
+	Piece.prototype.rotateLeft = function () {};
+	Piece.prototype.draw = function (ctx) {
+	  this.location.forEach( block => {
+	    ctx.beginPath();
+	    ctx.rect(block[0], block[1], PIECE_SIZE, PIECE_SIZE );
+	    ctx.fillStyle = this.color;
+	    ctx.fill();
+	    ctx.lineWidth = 1;
+	    ctx.strokeStyle = 'black';
+	    ctx.stroke();
+	  });
+	};
+	
+	module.exports = Piece;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	const colorConstants = {
+	  RED    : '#F00',
+	  BLUE   : '#00F',
+	  GREEN  : '#0F0',
+	  YELLOW : '#FFFF00',
+	  PURPLE : '#BF5FFF',
+	  ORANGE : '#FFA500'
+	}
+	
+	module.exports = colorConstants;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
 	const GameView = function (game, ctx) {
 	  this.ctx = ctx;
 	  this.game = game;
 	};
 	
+	GameView.MOVES = {
+	  "a" : "left",
+	  "s" : "down",
+	  "d" : "right"
+	};
+	
+	GameView.prototype.bindKeyHandlers = function () {
+	  Object.keys(GameView.MOVES).forEach( k => {
+	    let direction = GameView.MOVES[k];
+	    key(k, () => {
+	      this.game.pieces[this.game.pieces.length - 1].move(direction);
+	    });
+	  });
+	};
+	
 	GameView.prototype.start = function() {
+	  this.bindKeyHandlers();
 	  this.lastTime = 0;
 	  requestAnimationFrame(this.animate.bind(this));
 	};
@@ -159,136 +369,128 @@
 
 
 /***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	const Board = function () {
-	  this.boardAsArray = [
-	    // 0   1   2   3   4   5   6   7   8    9
-	    [[], [], [], [], [], [], [], [], [], []], // 0
-	    [[], [], [], [], [], [], [], [], [], []], // 1
-	    [[], [], [], [], [], [], [], [], [], []], // 2
-	    [[], [], [], [], [], [], [], [], [], []], // 3
-	    // BELOW IS VISIBLE TO PLAYER
-	    [[], [], [], [], [], [], [], [], [], []], // 4
-	    [[], [], [], [], [], [], [], [], [], []], // 5
-	    [[], [], [], [], [], [], [], [], [], []], // 6
-	    [[], [], [], [], [], [], [], [], [], []], // 7
-	    [[], [], [], [], [], [], [], [], [], []], // 8
-	    [[], [], [], [], [], [], [], [], [], []], // 9
-	    [[], [], [], [], [], [], [], [], [], []], // 10
-	    [[], [], [], [], [], [], [], [], [], []], // 11
-	    [[], [], [], [], [], [], [], [], [], []], // 12
-	    [[], [], [], [], [], [], [], [], [], []], // 13
-	    [[], [], [], [], [], [], [], [], [], []], // 14
-	    [[], [], [], [], [], [], [], [], [], []], // 15
-	    [[], [], [], [], [], [], [], [], [], []], // 16
-	    [[], [], [], [], [], [], [], [], [], []], // 17
-	    [[], [], [], [], [], [], [], [], [], []], // 18
-	    [[], [], [], [], [], [], [], [], [], []], // 19
-	    [[], [], [], [], [], [], [], [], [], []], // 20
-	    [[], [], [], [], [], [], [], [], [], []], // 21
-	    [[], [], [], [], [], [], [], [], [], []], // 22
-	    [[], [], [], [], [], [], [], [], [], []] // 23
-	  ];
-	};
-	
-	Board.prototype.clearRow = function (row) {
-	
-	};
-	
-	
-	
-	Board.prototype.shiftBoardDown = function() {
-	
-	};
-	
-	Board.prototype.checkRow = function () {
-	
-	};
-	
-	Board.prototype.shiftPieceDown = function (piece) {
-	
-	};
-	
-	Board.prototype.addPiece = function (piece) {
-	  piece.location.forEach( block => {
-	    this.boardAsArray[block[0]][block[1]] = piece.color;
-	  });
-	};
-	
-	module.exports = Board;
-
-
-/***/ },
-/* 4 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(5);
-	const colorConstants = __webpack_require__(6);
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
 	
-	const Square = function () {
+	const Line = function () {
 	  Piece.call(this);
-	  this.color = colorConstants.RED;
+	  this.color = colorConstants.BLUE;
 	  this.location = [
-	    [8, 0],
-	    [9, 0],
-	    [8, 1],
-	    [9, 1]
+	    [120, -120],
+	    [120, -90],
+	    [120, -60],
+	    [120, -30]
 	  ];
 	}
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
-	Square.prototype = new Surrogate();
+	Line.prototype = new Surrogate();
 	
-	module.exports = Square;
+	module.exports = Line;
 
 
 /***/ },
-/* 5 */
-/***/ function(module, exports) {
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
 
-	const Piece = function () {
-	  this.set = false;
-	  this.color = null;
-	  this.location = [];
-	};
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
 	
-	
-	Piece.prototype.rotateRight = function () {};
-	Piece.prototype.rotateLeft = function () {};
-	Piece.prototype.draw = function (ctx) {
-	  this.location.forEach( block => {
-	    if (block[0] > 3) {
-	      ctx.beginPath();
-	      ctx.rect((block[0] - 4) * 30, block[1] * 30, 30, 30 )
-	      ctx.fillStyle = this.color;
-	      ctx.fill();
-	      ctx.lineWidth = 1;
-	      ctx.strokeStyle = 'black';
-	      ctx.stroke()
-	    }
-	  });
-	};
-	
-	module.exports = Piece;
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	const colorConstants = {
-	  RED    : '#F00',
-	  BLUE   : '#00F',
-	  GREEN  : '#0F0',
-	  YELLOW : '#FFFF00',
-	  PURPLE : '#551A8B',
-	  ORANGE : '#FFA500'
+	const LeftL = function () {
+	  Piece.call(this);
+	  this.color = colorConstants.GREEN;
+	  this.location = [
+	    [120, -90],
+	    [120, -60],
+	    [120, -30],
+	    [90, -30]
+	  ];
 	}
 	
-	module.exports = colorConstants;
+	function Surrogate() {};
+	Surrogate.prototype = Piece.prototype;
+	LeftL.prototype = new Surrogate();
+	
+	module.exports = LeftL;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
+	
+	const RightL = function () {
+	  Piece.call(this);
+	  this.color = colorConstants.PURPLE;
+	  this.location = [
+	    [120, -90],
+	    [120, -60],
+	    [120, -30],
+	    [150, -30]
+	  ];
+	}
+	
+	function Surrogate() {};
+	Surrogate.prototype = Piece.prototype;
+	RightL.prototype = new Surrogate();
+	
+	module.exports = RightL;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
+	
+	const LeftZ = function () {
+	  Piece.call(this);
+	  this.color = colorConstants.YELLOW;
+	  this.location = [
+	    [90, -60],
+	    [120, -60],
+	    [120, -30],
+	    [150, -30]
+	  ];
+	}
+	
+	function Surrogate() {};
+	Surrogate.prototype = Piece.prototype;
+	LeftZ.prototype = new Surrogate();
+	
+	module.exports = LeftZ;
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
+	
+	const RightZ = function () {
+	  Piece.call(this);
+	  this.color = colorConstants.YELLOW;
+	  this.location = [
+	    [150, -60],
+	    [120, -60],
+	    [120, -30],
+	    [90, -30]
+	  ];
+	}
+	
+	function Surrogate() {};
+	Surrogate.prototype = Piece.prototype;
+	RightZ.prototype = new Surrogate();
+	
+	module.exports = RightZ;
 
 
 /***/ }

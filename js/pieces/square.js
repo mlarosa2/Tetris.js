@@ -5,10 +5,10 @@ const Square = function () {
   Piece.call(this);
   this.color = colorConstants.RED;
   this.location = [
-    [8, 0],
-    [9, 0],
-    [8, 1],
-    [9, 1]
+    [150, -30],
+    [120, -30],
+    [150, -60],
+    [120, -60]
   ];
 }
 

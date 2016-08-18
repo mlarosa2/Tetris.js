@@ -3,7 +3,23 @@ const GameView = function (game, ctx) {
   this.game = game;
 };
 
+GameView.MOVES = {
+  "a" : "left",
+  "s" : "down",
+  "d" : "right"
+};
+
+GameView.prototype.bindKeyHandlers = function () {
+  Object.keys(GameView.MOVES).forEach( k => {
+    let direction = GameView.MOVES[k];
+    key(k, () => {
+      this.game.pieces[this.game.pieces.length - 1].move(direction);
+    });
+  });
+};
+
 GameView.prototype.start = function() {
+  this.bindKeyHandlers();
   this.lastTime = 0;
   requestAnimationFrame(this.animate.bind(this));
 };
