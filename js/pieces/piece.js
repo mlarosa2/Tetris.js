@@ -1,8 +1,9 @@
 const PIECE_SIZE = 30;
 const MOVES = {
-  LEFT  : "left",
-  RIGHT : "right",
-  DOWN  : "down"
+  LEFT        : "left",
+  RIGHT       : "right",
+  DOWN        : "down",
+  ROTATE_LEFT : "rotate left"
 }
 const Piece = function (board) {
   this.board    = board.getBoard()
@@ -46,14 +47,24 @@ Piece.prototype.move = function(direction) {
           this.location[i][1] += 10;
         }
         break;
+      case MOVES.ROTATE_LEFT:
+        for (let j = 0; j < this.location.length; j++) {
+          if (this.location[j][0] <= 0 || this.checkColLeft()) {
+            return;
+          }
+        }
+        for (let i = 0; i < this.location.length; i++) {
+          if (this.location[i][0] >= 0) {
+            
+          }
+        }
+        break;
   }
 },
-Piece.prototype.rotateRight = function () {};
-Piece.prototype.rotateLeft = function () {};
 Piece.prototype.checkColLeft = function () {
   for (let i = 0; i < this.location.length; i++) {
-    let columnLeft  = Math.floor(this.location[i][0] / 30) - 1;
-    let row         = Math.floor(this.location[i][1] / 30);
+    let columnLeft  = Math.ceil(this.location[i][0] / 30) - 1;
+    let row         = Math.ceil(this.location[i][1] / 30);
     columnLeft < 0 ? columnLeft = 0 : columnLeft;
     row < 0 ? row = 0 : row;
     if (this.board[row][columnLeft].length > 0) {
@@ -65,8 +76,8 @@ Piece.prototype.checkColLeft = function () {
 };
 Piece.prototype.checkColRight = function () {
   for (let i = 0; i < this.location.length; i++) {
-    let columnRight = Math.floor(this.location[i][0] / 30) + 1;
-    let row         = Math.floor(this.location[i][1] / 30);
+    let columnRight = Math.ceil(this.location[i][0] / 30) + 1;
+    let row         = Math.ceil(this.location[i][1] / 30);
     columnRight > 9 ? columnRight = 9 : columnRight;
     row < 0 ? row = 0 : row;
     if (this.board[row][columnRight].length > 0) {

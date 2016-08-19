@@ -5,10 +5,10 @@ const Line = function (board) {
   Piece.call(this, board);
   this.color = colorConstants.BLUE;
   this.location = [
-    [120, -120],
-    [120, -90],
-    [120, -60],
-    [120, -30]
+    [120, -120, -2, -2],
+    [120, -90, -1, -1],
+    [120, -60, 0, 0],
+    [120, -30, 1, 1]
   ];
 }
 

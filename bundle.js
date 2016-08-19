@@ -226,10 +226,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.RED;
 	  this.location = [
-	    [150, -30],
-	    [120, -30],
-	    [150, -60],
-	    [120, -60]
+	    [150, -30, 0, 0],
+	    [120, -30, 0, 0],
+	    [150, -60, 0, 0],
+	    [120, -60, 0, 0]
 	  ];
 	}
 	
@@ -246,9 +246,10 @@
 
 	const PIECE_SIZE = 30;
 	const MOVES = {
-	  LEFT  : "left",
-	  RIGHT : "right",
-	  DOWN  : "down"
+	  LEFT        : "left",
+	  RIGHT       : "right",
+	  DOWN        : "down",
+	  ROTATE_LEFT : "rotate left"
 	}
 	const Piece = function (board) {
 	  this.board    = board.getBoard()
@@ -292,14 +293,24 @@
 	          this.location[i][1] += 10;
 	        }
 	        break;
+	      case MOVES.ROTATE_LEFT:
+	        for (let j = 0; j < this.location.length; j++) {
+	          if (this.location[j][0] <= 0 || this.checkColLeft()) {
+	            return;
+	          }
+	        }
+	        for (let i = 0; i < this.location.length; i++) {
+	          if (this.location[i][0] >= 0) {
+	            
+	          }
+	        }
+	        break;
 	  }
 	},
-	Piece.prototype.rotateRight = function () {};
-	Piece.prototype.rotateLeft = function () {};
 	Piece.prototype.checkColLeft = function () {
 	  for (let i = 0; i < this.location.length; i++) {
-	    let columnLeft  = Math.floor(this.location[i][0] / 30) - 1;
-	    let row         = Math.floor(this.location[i][1] / 30);
+	    let columnLeft  = Math.ceil(this.location[i][0] / 30) - 1;
+	    let row         = Math.ceil(this.location[i][1] / 30);
 	    columnLeft < 0 ? columnLeft = 0 : columnLeft;
 	    row < 0 ? row = 0 : row;
 	    if (this.board[row][columnLeft].length > 0) {
@@ -311,8 +322,8 @@
 	};
 	Piece.prototype.checkColRight = function () {
 	  for (let i = 0; i < this.location.length; i++) {
-	    let columnRight = Math.floor(this.location[i][0] / 30) + 1;
-	    let row         = Math.floor(this.location[i][1] / 30);
+	    let columnRight = Math.ceil(this.location[i][0] / 30) + 1;
+	    let row         = Math.ceil(this.location[i][1] / 30);
 	    columnRight > 9 ? columnRight = 9 : columnRight;
 	    row < 0 ? row = 0 : row;
 	    if (this.board[row][columnRight].length > 0) {
@@ -366,7 +377,9 @@
 	GameView.MOVES = {
 	  "a" : "left",
 	  "s" : "down",
-	  "d" : "right"
+	  "d" : "right",
+	  "e" : "rotate right",
+	  "q" : "rotate left"
 	};
 	
 	GameView.prototype.bindKeyHandlers = function () {
@@ -408,10 +421,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.BLUE;
 	  this.location = [
-	    [120, -120],
-	    [120, -90],
-	    [120, -60],
-	    [120, -30]
+	    [120, -120, -2, -2],
+	    [120, -90, -1, -1],
+	    [120, -60, 0, 0],
+	    [120, -30, 1, 1]
 	  ];
 	}
 	
@@ -433,10 +446,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.GREEN;
 	  this.location = [
-	    [120, -90],
-	    [120, -60],
-	    [120, -30],
-	    [90, -30]
+	    [120, -90, 0, -2],
+	    [120, -60, 0, -1],
+	    [120, -30, 0, 0],
+	    [90, -30, -1, 0]
 	  ];
 	}
 	
@@ -458,10 +471,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.PURPLE;
 	  this.location = [
-	    [120, -90],
-	    [120, -60],
-	    [120, -30],
-	    [150, -30]
+	    [120, -90, 0, -2],
+	    [120, -60, 0, -1],
+	    [120, -30, 0, 0],
+	    [150, -30, 1, 1]
 	  ];
 	}
 	
@@ -483,10 +496,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.YELLOW;
 	  this.location = [
-	    [90, -60],
-	    [120, -60],
-	    [120, -30],
-	    [150, -30]
+	    [90, -60, 0, -2],
+	    [120, -60, 0, -1],
+	    [120, -30, 0, 0],
+	    [150, -30, 1, 0]
 	  ];
 	}
 	
@@ -508,10 +521,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.ORANGE;
 	  this.location = [
-	    [150, -60],
-	    [120, -60],
-	    [120, -30],
-	    [90, -30]
+	    [150, -60, -1, -1],
+	    [120, -60, 0, -1],
+	    [120, -30, 0, 0],
+	    [90, -30, -1, 0]
 	  ];
 	}
 	

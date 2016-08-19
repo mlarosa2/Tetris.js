@@ -6,7 +6,9 @@ const GameView = function (game, ctx) {
 GameView.MOVES = {
   "a" : "left",
   "s" : "down",
-  "d" : "right"
+  "d" : "right",
+  "e" : "rotate right",
+  "q" : "rotate left"
 };
 
 GameView.prototype.bindKeyHandlers = function () {
