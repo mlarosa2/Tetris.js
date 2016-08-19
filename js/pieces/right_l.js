@@ -1,8 +1,8 @@
 const Piece          = require('./piece');
 const colorConstants = require('./color_constants');
 
-const RightL = function () {
-  Piece.call(this);
+const RightL = function (board) {
+  Piece.call(this, board);
   this.color = colorConstants.PURPLE;
   this.location = [
     [120, -90],

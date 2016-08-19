@@ -69,6 +69,9 @@
 	const RightL = __webpack_require__(9);
 	const LeftZ  = __webpack_require__(10);
 	const RightZ = __webpack_require__(11);
+	const Tee      = __webpack_require__(12);
+	
+	const NUM_PIECES = 7
 	
 	const Game = function () {
 	  this.board  = new Board();
@@ -76,31 +79,34 @@
 	  this.score  = 0;
 	};
 	
-	Game.BG_COLOR = '#FFFFFF';
-	Game.DIM_X = 300;
-	Game.DIM_Y = 600;
+	Game.BG_COLOR  = '#FFFFFF';
+	Game.DIM_X     = 300;
+	Game.DIM_Y     = 600;
 	Game.FALL_RATE = 2;
 	
 	Game.prototype.randomPiece = function () {
-	  const choose = Math.floor(Math.random() * (6 - 1) + 1);
+	  const choose = Math.floor(Math.random() * NUM_PIECES + 1);
 	  switch (choose) {
 	    case 1:
-	      return new Square();
+	      return new Square(this.board);
 	      break;
 	    case 2:
-	      return new Line();
+	      return new Line(this.board);
 	      break;
 	    case 3:
-	      return new LeftL();
+	      return new LeftL(this.board);
 	      break;
 	    case 4:
-	      return new RightL();
+	      return new RightL(this.board);
 	      break;
 	    case 5:
-	      return new LeftZ();
+	      return new LeftZ(this.board);
 	      break;
 	    case 6:
-	      return new RightZ();
+	      return new RightZ(this.board);
+	      break;
+	    case 7:
+	      return new Tee(this.board);
 	      break;
 	  }
 	};
@@ -114,13 +120,6 @@
 	  ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
 	  ctx.fillStyle = Game.BG_COLOR;
 	  ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
-	  ctx.fillStyle = '#f00'
-	
-	  // for (let i = 4; i < 24; i++) {
-	  //  for (let j = 0; j < 10; j++) {
-	  //    ctx.strokeRect(j * 30, i * 30, 30, 30)
-	  //  }
-	  // }
 	
 	  this.pieces.forEach( piece => {
 	    piece.draw(ctx);
@@ -191,10 +190,6 @@
 	    let row = Math.floor(piece.location[i][1] / 30) + 1;
 	    column > 9 ? column = 9 : column;
 	    row < 0 ? row = 0 : row;
-	    if (boardAsArray[row][column] === undefined) {
-	      console.log(row);
-	      console.log(column);
-	    }
 	    if (boardAsArray[row][column].length > 0) {
 	      return true;
 	    }
@@ -203,10 +198,16 @@
 	  return false;
 	};
 	
+	Board.prototype.getBoard = function () {
+	  return boardAsArray;
+	};
+	
 	Board.prototype.addPiece = function (piece) {
 	  piece.location.forEach( block => {
-	    const column = block[0] / 30;
+	    const column = Math.floor(block[0] / 30);
 	    const row    = Math.floor(block[1] / 30);
+	    block[0] = column * 30;
+	    block[1] = row * 30;
 	    boardAsArray[row][column] = [piece.color];
 	  });
 	};
@@ -221,8 +222,8 @@
 	const Piece          = __webpack_require__(4);
 	const colorConstants = __webpack_require__(5);
 	
-	const Square = function () {
-	  Piece.call(this);
+	const Square = function (board) {
+	  Piece.call(this, board);
 	  this.color = colorConstants.RED;
 	  this.location = [
 	    [150, -30],
@@ -249,28 +250,29 @@
 	  RIGHT : "right",
 	  DOWN  : "down"
 	}
-	const Piece = function () {
-	  this.set = false;
-	  this.color = null;
+	const Piece = function (board) {
+	  this.board    = board.getBoard()
+	  this.set      = false;
+	  this.color    = null;
 	  this.location = [];
 	};
 	Piece.prototype.move = function(direction) {
 	  switch (direction) {
 	    case MOVES.RIGHT:
-	    for (let j = 0; j < this.location.length; j++) {
-	      if (this.location[j][0] >= 270) {
-	        return;
+	      for (let j = 0; j < this.location.length; j++) {
+	        if (this.location[j][0] >= 270 || this.checkColRight()) {
+	          return;
+	        }
 	      }
-	    }
-	    for (let i = 0; i < this.location.length; i++) {
-	      if (this.location[i][0] <= 270) {
-	        this.location[i][0] += 30;
+	      for (let i = 0; i < this.location.length; i++) {
+	        if (this.location[i][0] <= 270) {
+	          this.location[i][0] += 30;
+	        }
 	      }
-	    }
 	    break;
 	    case MOVES.LEFT:
 	      for (let j = 0; j < this.location.length; j++) {
-	        if (this.location[j][0] <= 0) {
+	        if (this.location[j][0] <= 0 || this.checkColLeft()) {
 	          return;
 	        }
 	      }
@@ -294,6 +296,32 @@
 	},
 	Piece.prototype.rotateRight = function () {};
 	Piece.prototype.rotateLeft = function () {};
+	Piece.prototype.checkColLeft = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    let columnLeft  = Math.floor(this.location[i][0] / 30) - 1;
+	    let row         = Math.floor(this.location[i][1] / 30);
+	    columnLeft < 0 ? columnLeft = 0 : columnLeft;
+	    row < 0 ? row = 0 : row;
+	    if (this.board[row][columnLeft].length > 0) {
+	      return true;
+	    }
+	  }
+	
+	  return false;
+	};
+	Piece.prototype.checkColRight = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    let columnRight = Math.floor(this.location[i][0] / 30) + 1;
+	    let row         = Math.floor(this.location[i][1] / 30);
+	    columnRight > 9 ? columnRight = 9 : columnRight;
+	    row < 0 ? row = 0 : row;
+	    if (this.board[row][columnRight].length > 0) {
+	      return true;
+	    }
+	  }
+	
+	  return false;
+	};
 	Piece.prototype.draw = function (ctx) {
 	  this.location.forEach( block => {
 	    ctx.beginPath();
@@ -319,7 +347,8 @@
 	  GREEN  : '#0F0',
 	  YELLOW : '#FFFF00',
 	  PURPLE : '#BF5FFF',
-	  ORANGE : '#FFA500'
+	  ORANGE : '#FFA500',
+	  PINK   : '#FF69B4'
 	}
 	
 	module.exports = colorConstants;
@@ -375,8 +404,8 @@
 	const Piece          = __webpack_require__(4);
 	const colorConstants = __webpack_require__(5);
 	
-	const Line = function () {
-	  Piece.call(this);
+	const Line = function (board) {
+	  Piece.call(this, board);
 	  this.color = colorConstants.BLUE;
 	  this.location = [
 	    [120, -120],
@@ -400,8 +429,8 @@
 	const Piece          = __webpack_require__(4);
 	const colorConstants = __webpack_require__(5);
 	
-	const LeftL = function () {
-	  Piece.call(this);
+	const LeftL = function (board) {
+	  Piece.call(this, board);
 	  this.color = colorConstants.GREEN;
 	  this.location = [
 	    [120, -90],
@@ -425,8 +454,8 @@
 	const Piece          = __webpack_require__(4);
 	const colorConstants = __webpack_require__(5);
 	
-	const RightL = function () {
-	  Piece.call(this);
+	const RightL = function (board) {
+	  Piece.call(this, board);
 	  this.color = colorConstants.PURPLE;
 	  this.location = [
 	    [120, -90],
@@ -450,8 +479,8 @@
 	const Piece          = __webpack_require__(4);
 	const colorConstants = __webpack_require__(5);
 	
-	const LeftZ = function () {
-	  Piece.call(this);
+	const LeftZ = function (board) {
+	  Piece.call(this, board);
 	  this.color = colorConstants.YELLOW;
 	  this.location = [
 	    [90, -60],
@@ -475,9 +504,9 @@
 	const Piece          = __webpack_require__(4);
 	const colorConstants = __webpack_require__(5);
 	
-	const RightZ = function () {
-	  Piece.call(this);
-	  this.color = colorConstants.YELLOW;
+	const RightZ = function (board) {
+	  Piece.call(this, board);
+	  this.color = colorConstants.ORANGE;
 	  this.location = [
 	    [150, -60],
 	    [120, -60],
@@ -491,6 +520,31 @@
 	RightZ.prototype = new Surrogate();
 	
 	module.exports = RightZ;
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	const Piece          = __webpack_require__(4);
+	const colorConstants = __webpack_require__(5);
+	
+	const Tee = function (board) {
+	  Piece.call(this, board);
+	  this.color = colorConstants.PINK;
+	  this.location = [
+	    [120, -60],
+	    [150, -30],
+	    [120, -30],
+	    [90, -30]
+	  ];
+	}
+	
+	function Surrogate() {};
+	Surrogate.prototype = Piece.prototype;
+	Tee.prototype = new Surrogate();
+	
+	module.exports = Tee;
 
 
 /***/ }

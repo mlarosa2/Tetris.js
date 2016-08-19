@@ -1,12 +1,12 @@
 const Piece          = require('./piece');
 const colorConstants = require('./color_constants');
 
-const RightZ = function (board) {
+const Tee = function (board) {
   Piece.call(this, board);
-  this.color = colorConstants.ORANGE;
+  this.color = colorConstants.PINK;
   this.location = [
-    [150, -60],
     [120, -60],
+    [150, -30],
     [120, -30],
     [90, -30]
   ];
@@ -14,6 +14,6 @@ const RightZ = function (board) {
 
 function Surrogate() {};
 Surrogate.prototype = Piece.prototype;
-RightZ.prototype = new Surrogate();
+Tee.prototype = new Surrogate();
 
-module.exports = RightZ;
+module.exports = Tee;

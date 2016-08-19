@@ -4,7 +4,8 @@ const colorConstants = {
   GREEN  : '#0F0',
   YELLOW : '#FFFF00',
   PURPLE : '#BF5FFF',
-  ORANGE : '#FFA500'
+  ORANGE : '#FFA500',
+  PINK   : '#FF69B4'
 }
 
 module.exports = colorConstants;

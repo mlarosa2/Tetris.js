@@ -4,28 +4,29 @@ const MOVES = {
   RIGHT : "right",
   DOWN  : "down"
 }
-const Piece = function () {
-  this.set = false;
-  this.color = null;
+const Piece = function (board) {
+  this.board    = board.getBoard()
+  this.set      = false;
+  this.color    = null;
   this.location = [];
 };
 Piece.prototype.move = function(direction) {
   switch (direction) {
     case MOVES.RIGHT:
-    for (let j = 0; j < this.location.length; j++) {
-      if (this.location[j][0] >= 270) {
-        return;
+      for (let j = 0; j < this.location.length; j++) {
+        if (this.location[j][0] >= 270 || this.checkColRight()) {
+          return;
+        }
       }
-    }
-    for (let i = 0; i < this.location.length; i++) {
-      if (this.location[i][0] <= 270) {
-        this.location[i][0] += 30;
+      for (let i = 0; i < this.location.length; i++) {
+        if (this.location[i][0] <= 270) {
+          this.location[i][0] += 30;
+        }
       }
-    }
     break;
     case MOVES.LEFT:
       for (let j = 0; j < this.location.length; j++) {
-        if (this.location[j][0] <= 0) {
+        if (this.location[j][0] <= 0 || this.checkColLeft()) {
           return;
         }
       }
@@ -49,6 +50,32 @@ Piece.prototype.move = function(direction) {
 },
 Piece.prototype.rotateRight = function () {};
 Piece.prototype.rotateLeft = function () {};
+Piece.prototype.checkColLeft = function () {
+  for (let i = 0; i < this.location.length; i++) {
+    let columnLeft  = Math.floor(this.location[i][0] / 30) - 1;
+    let row         = Math.floor(this.location[i][1] / 30);
+    columnLeft < 0 ? columnLeft = 0 : columnLeft;
+    row < 0 ? row = 0 : row;
+    if (this.board[row][columnLeft].length > 0) {
+      return true;
+    }
+  }
+
+  return false;
+};
+Piece.prototype.checkColRight = function () {
+  for (let i = 0; i < this.location.length; i++) {
+    let columnRight = Math.floor(this.location[i][0] / 30) + 1;
+    let row         = Math.floor(this.location[i][1] / 30);
+    columnRight > 9 ? columnRight = 9 : columnRight;
+    row < 0 ? row = 0 : row;
+    if (this.board[row][columnRight].length > 0) {
+      return true;
+    }
+  }
+
+  return false;
+};
 Piece.prototype.draw = function (ctx) {
   this.location.forEach( block => {
     ctx.beginPath();
