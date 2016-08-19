@@ -47,18 +47,6 @@ Piece.prototype.move = function(direction) {
           this.location[i][1] += 10;
         }
         break;
-      case MOVES.ROTATE_LEFT:
-        for (let j = 0; j < this.location.length; j++) {
-          if (this.location[j][0] <= 0 || this.checkColLeft()) {
-            return;
-          }
-        }
-        for (let i = 0; i < this.location.length; i++) {
-          if (this.location[i][0] >= 0) {
-            
-          }
-        }
-        break;
   }
 },
 Piece.prototype.checkColLeft = function () {
@@ -74,6 +62,29 @@ Piece.prototype.checkColLeft = function () {
 
   return false;
 };
+Piece.prototype.checkBlockLeft = function(block) {
+  let blockLeft = Math.ceil(block[0] / 30) - 1;
+  let row       = Math.ceil(block[1] / 30);
+  blockLeft < 0 ? blockLeft = 0 : blockLeft;
+  row < 0 ? row = 0 : row;
+
+  if (this.board[row][blockLeft].length > 0 || block[0] < 0) {
+    return true;
+  }
+
+  return false;
+}
+Piece.prototype.checkBlockRight = function(block) {
+  let blockRight = Math.ceil(block[0] / 30) + 1;
+  let row       = Math.ceil(block[1] / 30);
+  blockRight > 9 ? blockRight = 9 : blockRight;
+  row < 0 ? row = 0 : row;
+  if (this.board[row][blockRight].length > 0 || block[0] >= 300) {
+    return true;
+  }
+
+  return false;
+}
 Piece.prototype.checkColRight = function () {
   for (let i = 0; i < this.location.length; i++) {
     let columnRight = Math.ceil(this.location[i][0] / 30) + 1;
@@ -97,6 +108,12 @@ Piece.prototype.draw = function (ctx) {
     ctx.strokeStyle = 'black';
     ctx.stroke();
   });
+};
+Piece.prototype.rotateLeft = function () {
+
+};
+Piece.prototype.rotateRight = function() {
+
 };
 
 module.exports = Piece;

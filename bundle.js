@@ -45,7 +45,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	const Game     = __webpack_require__(1);
-	const GameView = __webpack_require__(6);
+	const GameView = __webpack_require__(12);
 	const Board = __webpack_require__(2);
 	
 	document.addEventListener("DOMContentLoaded", function () {
@@ -64,12 +64,12 @@
 
 	const Board  = __webpack_require__(2);
 	const Square = __webpack_require__(3);
-	const Line   = __webpack_require__(7);
-	const LeftL  = __webpack_require__(8);
-	const RightL = __webpack_require__(9);
-	const LeftZ  = __webpack_require__(10);
-	const RightZ = __webpack_require__(11);
-	const Tee      = __webpack_require__(12);
+	const Line   = __webpack_require__(6);
+	const LeftL  = __webpack_require__(7);
+	const RightL = __webpack_require__(8);
+	const LeftZ  = __webpack_require__(9);
+	const RightZ = __webpack_require__(10);
+	const Tee      = __webpack_require__(11);
 	
 	const NUM_PIECES = 7
 	
@@ -86,7 +86,7 @@
 	
 	Game.prototype.randomPiece = function () {
 	  const choose = Math.floor(Math.random() * NUM_PIECES + 1);
-	  switch (choose) {
+	  switch (2) {
 	    case 1:
 	      return new Square(this.board);
 	      break;
@@ -186,10 +186,13 @@
 	
 	Board.prototype.isNextRowSet = function (piece) {
 	  for (let i = 0; i < piece.location.length; i++) {
-	    let column = Math.floor(piece.location[i][0] / 30);
+	    let column = Math.abs(Math.floor(piece.location[i][0] / 30));
 	    let row = Math.floor(piece.location[i][1] / 30) + 1;
 	    column > 9 ? column = 9 : column;
 	    row < 0 ? row = 0 : row;
+	    if (boardAsArray[row][column] === undefined) {
+	      debugger
+	    }
 	    if (boardAsArray[row][column].length > 0) {
 	      return true;
 	    }
@@ -293,18 +296,6 @@
 	          this.location[i][1] += 10;
 	        }
 	        break;
-	      case MOVES.ROTATE_LEFT:
-	        for (let j = 0; j < this.location.length; j++) {
-	          if (this.location[j][0] <= 0 || this.checkColLeft()) {
-	            return;
-	          }
-	        }
-	        for (let i = 0; i < this.location.length; i++) {
-	          if (this.location[i][0] >= 0) {
-	            
-	          }
-	        }
-	        break;
 	  }
 	},
 	Piece.prototype.checkColLeft = function () {
@@ -320,6 +311,29 @@
 	
 	  return false;
 	};
+	Piece.prototype.checkBlockLeft = function(block) {
+	  let blockLeft = Math.ceil(block[0] / 30) - 1;
+	  let row       = Math.ceil(block[1] / 30);
+	  blockLeft < 0 ? blockLeft = 0 : blockLeft;
+	  row < 0 ? row = 0 : row;
+	
+	  if (this.board[row][blockLeft].length > 0 || block[0] < 0) {
+	    return true;
+	  }
+	
+	  return false;
+	}
+	Piece.prototype.checkBlockRight = function(block) {
+	  let blockRight = Math.ceil(block[0] / 30) + 1;
+	  let row       = Math.ceil(block[1] / 30);
+	  blockRight > 9 ? blockRight = 9 : blockRight;
+	  row < 0 ? row = 0 : row;
+	  if (this.board[row][blockRight].length > 0 || block[0] >= 300) {
+	    return true;
+	  }
+	
+	  return false;
+	}
 	Piece.prototype.checkColRight = function () {
 	  for (let i = 0; i < this.location.length; i++) {
 	    let columnRight = Math.ceil(this.location[i][0] / 30) + 1;
@@ -344,6 +358,12 @@
 	    ctx.stroke();
 	  });
 	};
+	Piece.prototype.rotateLeft = function () {
+	
+	};
+	Piece.prototype.rotateRight = function() {
+	
+	};
 	
 	module.exports = Piece;
 
@@ -367,51 +387,6 @@
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
-
-	const GameView = function (game, ctx) {
-	  this.ctx = ctx;
-	  this.game = game;
-	};
-	
-	GameView.MOVES = {
-	  "a" : "left",
-	  "s" : "down",
-	  "d" : "right",
-	  "e" : "rotate right",
-	  "q" : "rotate left"
-	};
-	
-	GameView.prototype.bindKeyHandlers = function () {
-	  Object.keys(GameView.MOVES).forEach( k => {
-	    let direction = GameView.MOVES[k];
-	    key(k, () => {
-	      this.game.pieces[this.game.pieces.length - 1].move(direction);
-	    });
-	  });
-	};
-	
-	GameView.prototype.start = function() {
-	  this.bindKeyHandlers();
-	  this.lastTime = 0;
-	  requestAnimationFrame(this.animate.bind(this));
-	};
-	
-	GameView.prototype.animate = function(time) {
-	  const timeDelta = time - this.lastTime;
-	
-	  this.game.step(timeDelta);
-	  this.game.draw(this.ctx);
-	  this.lastTime = time
-	
-	  requestAnimationFrame(this.animate.bind(this));
-	};
-	
-	module.exports = GameView;
-
-
-/***/ },
-/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Piece          = __webpack_require__(4);
@@ -421,22 +396,211 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.BLUE;
 	  this.location = [
-	    [120, -120, -2, -2],
-	    [120, -90, -1, -1],
-	    [120, -60, 0, 0],
-	    [120, -30, 1, 1]
+	    [120, -120],
+	    [120, -90],
+	    [120, -60],
+	    [120, -30]
 	  ];
 	}
-	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	Line.prototype = new Surrogate();
+	
+	Line.prototype.rotateLeft = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 1) continue;
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 30)) {
+	
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 60)) {
+	
+	      this.location[i][0] -= 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] - 30) && this.location[i][1] === this.location[1][1]) {
+	
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] - 60) && this.location[i][1] === this.location[1][1]) {
+	
+	      this.location[i][0] += 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 30)) {
+	
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 60)) {
+	
+	      this.location[i][0] += 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] + 30) && this.location[i][1] === this.location[1][1]) {
+	
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] + 60) && this.location[i][1] === this.location[1][1]) {
+	
+	      this.location[i][0] -= 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	  }
+	};
+	
+	Line.prototype.rotateRight = function() {
+	  for (let j = 0; j < this.location.length; j++) {
+	    if (this.location[j][0] <= 0 || this.checkColLeft()) {
+	      return;
+	    }
+	  }
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 1) continue;
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 30)) {
+	
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 60)) {
+	
+	      this.location[i][0] += 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] + 30) && this.location[i][1] === this.location[1][1]) {
+	
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] + 60) && this.location[i][1] === this.location[1][1]) {
+	
+	      this.location[i][0] -= 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 60)) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] -= 60;
+	
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] - 30) && this.location[i][1] === this.location[1][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] - 60) && this.location[i][1] === this.location[1][1]) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	  }
+	};
 	
 	module.exports = Line;
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Piece          = __webpack_require__(4);
@@ -446,22 +610,191 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.GREEN;
 	  this.location = [
-	    [120, -90, 0, -2],
-	    [120, -60, 0, -1],
+	    [120, -90, 0, -1],
+	    [120, -60, 0, 0],
 	    [120, -30, 0, 0],
-	    [90, -30, -1, 0]
+	    [90, -30, -1, 1]
 	  ];
 	}
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	LeftL.prototype = new Surrogate();
-	
+	LeftL.prototype.rotateLeft = function() {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 2) continue;
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 30)) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 60)) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 60)) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	  }
+	};
+	LeftL.prototype.rotateRight = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 2) continue;
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 60)) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 30)) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 60)) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	  }
+	};
 	module.exports = LeftL;
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Piece          = __webpack_require__(4);
@@ -471,22 +804,191 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.PURPLE;
 	  this.location = [
-	    [120, -90, 0, -2],
-	    [120, -60, 0, -1],
-	    [120, -30, 0, 0],
-	    [150, -30, 1, 1]
+	    [120, -90],
+	    [120, -60],
+	    [120, -30],
+	    [150, -30]
 	  ];
 	}
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	RightL.prototype = new Surrogate();
-	
+	RightL.prototype.rotateLeft = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 2) continue;
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 60)) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 30)) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 60)) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	  }
+	};
+	RightL.prototype.rotateRight = function() {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 2) continue;
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 30)) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] - 60)) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] + 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] += 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] -= 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[2][0] && this.location[i][1] === (this.location[2][1] + 60)) {
+	      this.location[i][0] -= 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 30) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[2][0] - 60) && this.location[i][1] === this.location[2][1]) {
+	      this.location[i][0] += 60;
+	      this.location[i][1] -= 60;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 60;
+	        this.location[i][1] += 60;
+	        break;
+	      };
+	      continue;
+	    }
+	  }
+	};
 	module.exports = RightL;
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Piece          = __webpack_require__(4);
@@ -507,11 +1009,24 @@
 	Surrogate.prototype = Piece.prototype;
 	LeftZ.prototype = new Surrogate();
 	
+	LeftZ.prototype.rotateLeft = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    let xLocationOld = this.location[i][0];
+	    this.location[i][0] = 1 - this.location[i][1];
+	    this.location[i][1] = xLocationOld;
+	  }
+	};
+	
+	LeftZ.prototype.rotateRight = function() {
+	  let yLocationOld = this.location[i][1];
+	  this.location[i][1] = 1 - this.location[i][0];
+	  this.location[i][0] = yLocationOld;
+	};
 	module.exports = LeftZ;
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Piece          = __webpack_require__(4);
@@ -521,10 +1036,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.ORANGE;
 	  this.location = [
-	    [150, -60, -1, -1],
-	    [120, -60, 0, -1],
-	    [120, -30, 0, 0],
-	    [90, -30, -1, 0]
+	    [150, -60],
+	    [120, -60],
+	    [120, -30],
+	    [90, -30]
 	  ];
 	}
 	
@@ -532,11 +1047,18 @@
 	Surrogate.prototype = Piece.prototype;
 	RightZ.prototype = new Surrogate();
 	
+	RightZ.prototype.rotateLeft = function () {
+	
+	};
+	
+	RightZ.prototype.rotateRight = function() {
+	
+	};
 	module.exports = RightZ;
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	const Piece          = __webpack_require__(4);
@@ -547,8 +1069,8 @@
 	  this.color = colorConstants.PINK;
 	  this.location = [
 	    [120, -60],
-	    [150, -30],
 	    [120, -30],
+	    [150, -30],
 	    [90, -30]
 	  ];
 	}
@@ -556,8 +1078,141 @@
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	Tee.prototype = new Surrogate();
-	
+	Tee.prototype.rotateLeft = function () {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 1) continue;
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      }
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] - 30) && this.location[i][1] === this.location[1][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      }
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 30)) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      }
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] + 30) && this.location[i][1] === this.location[1][1]) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockLeft(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      }
+	      continue;
+	    }
+	  }
+	};
+	Tee.prototype.rotateRight = function() {
+	  for (let i = 0; i < this.location.length; i++) {
+	    if (i === 1) continue;
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 30)) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      };
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] + 30) && this.location[i][1] === this.location[1][1]) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] += 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] -= 30;
+	        break;
+	      }
+	      continue;
+	    }
+	    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 30)) {
+	      this.location[i][0] -= 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] += 30;
+	        this.location[i][1] += 30;
+	        break;
+	      }
+	      continue;
+	    }
+	    if (this.location[i][0] === (this.location[1][0] - 30) && this.location[i][1] === this.location[1][1]) {
+	      this.location[i][0] += 30;
+	      this.location[i][1] -= 30;
+	      if (this.checkBlockRight(this.location[i])) {
+	        this.location[i][0] -= 30;
+	        this.location[i][1] += 30;
+	        break;
+	      }
+	      continue;
+	    }
+	  }
+	};
 	module.exports = Tee;
+
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	const GameView = function (game, ctx) {
+	  this.ctx = ctx;
+	  this.game = game;
+	};
+	
+	GameView.MOVES = {
+	  "a" : "left",
+	  "s" : "down",
+	  "d" : "right",
+	};
+	
+	GameView.prototype.bindKeyHandlers = function () {
+	  Object.keys(GameView.MOVES).forEach( k => {
+	    let direction = GameView.MOVES[k];
+	    key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
+	  });
+	
+	  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(); });
+	  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(); });
+	};
+	
+	GameView.prototype.start = function() {
+	  this.bindKeyHandlers();
+	  this.lastTime = 0;
+	  requestAnimationFrame(this.animate.bind(this));
+	};
+	
+	GameView.prototype.animate = function(time) {
+	  const timeDelta = time - this.lastTime;
+	
+	  this.game.step(timeDelta);
+	  this.game.draw(this.ctx);
+	  this.lastTime = time
+	
+	  requestAnimationFrame(this.animate.bind(this));
+	};
+	
+	module.exports = GameView;
 
 
 /***/ }

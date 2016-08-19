@@ -5,10 +5,10 @@ const RightZ = function (board) {
   Piece.call(this, board);
   this.color = colorConstants.ORANGE;
   this.location = [
-    [150, -60, -1, -1],
-    [120, -60, 0, -1],
-    [120, -30, 0, 0],
-    [90, -30, -1, 0]
+    [150, -60],
+    [120, -60],
+    [120, -30],
+    [90, -30]
   ];
 }
 
@@ -16,4 +16,11 @@ function Surrogate() {};
 Surrogate.prototype = Piece.prototype;
 RightZ.prototype = new Surrogate();
 
+RightZ.prototype.rotateLeft = function () {
+
+};
+
+RightZ.prototype.rotateRight = function() {
+
+};
 module.exports = RightZ;

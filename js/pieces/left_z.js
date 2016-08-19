@@ -16,4 +16,17 @@ function Surrogate() {};
 Surrogate.prototype = Piece.prototype;
 LeftZ.prototype = new Surrogate();
 
+LeftZ.prototype.rotateLeft = function () {
+  for (let i = 0; i < this.location.length; i++) {
+    let xLocationOld = this.location[i][0];
+    this.location[i][0] = 1 - this.location[i][1];
+    this.location[i][1] = xLocationOld;
+  }
+};
+
+LeftZ.prototype.rotateRight = function() {
+  let yLocationOld = this.location[i][1];
+  this.location[i][1] = 1 - this.location[i][0];
+  this.location[i][0] = yLocationOld;
+};
 module.exports = LeftZ;

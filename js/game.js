@@ -22,7 +22,7 @@ Game.FALL_RATE = 2;
 
 Game.prototype.randomPiece = function () {
   const choose = Math.floor(Math.random() * NUM_PIECES + 1);
-  switch (choose) {
+  switch (2) {
     case 1:
       return new Square(this.board);
       break;

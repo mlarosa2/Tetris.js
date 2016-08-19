@@ -7,17 +7,16 @@ GameView.MOVES = {
   "a" : "left",
   "s" : "down",
   "d" : "right",
-  "e" : "rotate right",
-  "q" : "rotate left"
 };
 
 GameView.prototype.bindKeyHandlers = function () {
   Object.keys(GameView.MOVES).forEach( k => {
     let direction = GameView.MOVES[k];
-    key(k, () => {
-      this.game.pieces[this.game.pieces.length - 1].move(direction);
-    });
+    key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
   });
+
+  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(); });
+  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(); });
 };
 
 GameView.prototype.start = function() {
