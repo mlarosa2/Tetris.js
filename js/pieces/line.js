@@ -10,6 +10,7 @@ const Line = function (board) {
     [120, -60],
     [120, -30]
   ];
+  this.name = "Line"
 }
 function Surrogate() {};
 Surrogate.prototype = Piece.prototype;

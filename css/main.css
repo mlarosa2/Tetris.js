@@ -1,0 +1,29 @@
+body {
+  font-family : sans-serif;
+}
+
+h3 {
+  font-weight: 400;
+}
+
+main {
+  margin: auto;
+  width: 600px;
+}
+main:after {
+  content: " ";
+  display: block;
+  clear  : both;
+}
+#canvas, #next-piece, .score {
+  float: left;
+  text-align: center;
+}
+#next-piece {
+  width: 150px;
+}
+.next-piece {
+  text-align: center;
+  width: 150px;
+  float: left;
+}

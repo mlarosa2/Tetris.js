@@ -10,6 +10,7 @@ const RightZ = function (board) {
     [120, -30],
     [90, -30]
   ];
+  this.name = "RightZ";
 }
 
 function Surrogate() {};

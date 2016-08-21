@@ -78,11 +78,12 @@
 	  this.score     = 0;
 	  this.paused    = false;
 	  this.nextPiece = [];
+	  this.score     = 0;
 	};
 	
-	Game.BG_COLOR       = '#FFFFFF';
-	Game.DIM_X          = 300;
-	Game.DIM_Y          = 600;
+	Game.BG_COLOR         = '#FFFFFF';
+	Game.DIM_X            = 300;
+	Game.DIM_Y            = 600;
 	Game.FALL_RATE        = 2;
 	Game.OriginalFallRate = 2;
 	
@@ -120,6 +121,7 @@
 	Game.prototype.addPiece = function () {
 	  let piece = this.nextPiece.shift();
 	  this.nextPiece.push(this.randomPiece());
+	  document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
 	  this.pieces.push(piece);
 	};
 	
@@ -135,6 +137,11 @@
 	  this.pieces.forEach( piece => {
 	    piece.draw(ctx);
 	  });
+	};
+	
+	Game.prototype.setScore = function () {
+	  let scoreTag = document.getElementById("score");
+	  scoreTag.innerHTML = this.score;
 	};
 	
 	Game.prototype.movePiece = function (delta) {
@@ -163,6 +170,9 @@
 	      this.addPiece();
 	      let fullRows = this.board.checkForFullRow();
 	      if (Object.keys(fullRows).length > 0) {
+	        this.score += Object.keys(fullRows).length * 100;
+	        if (Object.keys(fullRows).length === 4) this.score += 400;
+	        this.setScore();
 	        this.board.clearRows(fullRows, ctx, Game.DIM_X, Game.BG_COLOR);
 	      }
 	    }
@@ -311,6 +321,7 @@
 	    [150, -60],
 	    [120, -60]
 	  ];
+	  this.name = "Square";
 	}
 	
 	function Surrogate() {};
@@ -467,6 +478,7 @@
 	    [120, -60],
 	    [120, -30]
 	  ];
+	  this.name = "Line"
 	}
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
@@ -668,6 +680,7 @@
 	    [120, -30],
 	    [90, -30]
 	  ];
+	  this.name = "LeftL";
 	}
 	
 	function Surrogate() {};
@@ -861,6 +874,7 @@
 	    [120, -30],
 	    [150, -30]
 	  ];
+	  this.name = "RightL";
 	}
 	
 	function Surrogate() {};
@@ -1054,6 +1068,7 @@
 	    [120, -30],
 	    [150, -30]
 	  ];
+	  this.name = "LeftZ";
 	}
 	
 	function Surrogate() {};
@@ -1247,6 +1262,7 @@
 	    [120, -30],
 	    [90, -30]
 	  ];
+	  this.name = "RightZ";
 	}
 	
 	function Surrogate() {};
@@ -1440,6 +1456,7 @@
 	    [150, -30],
 	    [90, -30]
 	  ];
+	  this.name = "Tee";
 	}
 	
 	function Surrogate() {};

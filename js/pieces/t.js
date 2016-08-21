@@ -10,6 +10,7 @@ const Tee = function (board) {
     [150, -30],
     [90, -30]
   ];
+  this.name = "Tee";
 }
 
 function Surrogate() {};

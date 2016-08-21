@@ -15,11 +15,12 @@ const Game = function () {
   this.score     = 0;
   this.paused    = false;
   this.nextPiece = [];
+  this.score     = 0;
 };
 
-Game.BG_COLOR       = '#FFFFFF';
-Game.DIM_X          = 300;
-Game.DIM_Y          = 600;
+Game.BG_COLOR         = '#FFFFFF';
+Game.DIM_X            = 300;
+Game.DIM_Y            = 600;
 Game.FALL_RATE        = 2;
 Game.OriginalFallRate = 2;
 
@@ -57,6 +58,7 @@ Game.prototype.randomPiece = function () {
 Game.prototype.addPiece = function () {
   let piece = this.nextPiece.shift();
   this.nextPiece.push(this.randomPiece());
+  document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
   this.pieces.push(piece);
 };
 
@@ -72,6 +74,11 @@ Game.prototype.draw = function (ctx) {
   this.pieces.forEach( piece => {
     piece.draw(ctx);
   });
+};
+
+Game.prototype.setScore = function () {
+  let scoreTag = document.getElementById("score");
+  scoreTag.innerHTML = this.score;
 };
 
 Game.prototype.movePiece = function (delta) {
@@ -100,6 +107,9 @@ Game.prototype.step = function (delta, ctx) {
       this.addPiece();
       let fullRows = this.board.checkForFullRow();
       if (Object.keys(fullRows).length > 0) {
+        this.score += Object.keys(fullRows).length * 100;
+        if (Object.keys(fullRows).length === 4) this.score += 400;
+        this.setScore();
         this.board.clearRows(fullRows, ctx, Game.DIM_X, Game.BG_COLOR);
       }
     }

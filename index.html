@@ -3,9 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Tetris.js</title>
+    <link rel="stylesheet" href="./css/main.css" media="screen" title="no title" charset="utf-8">
   </head>
   <body>
-    <canvas id="canvas" width="300" height="600" style="border: 1px solid black"></canvas>
+    <main>
+      <canvas id="canvas" width="300" height="600" style="border: 1px solid black"></canvas>
+      <div class="next-piece">
+        <h3>NE​‌ЖT PIECE</h3>
+        <div id="next-piece"></div>
+      </div>
+      <div class="score">
+        <h3>SCOЯE</h3>
+        <span id="score">0</span>
+      </div>
+    </main>
+    <audio loop>
+      <source src="./files/theme.mp3" type="audio/mpeg" autoplay>
+    </audio>
     <script type="text/javascript" src="./js/vendor/keymaster.js"></script>
     <script type="text/javascript" src="bundle.js"></script>
   </body>

@@ -10,6 +10,7 @@ const Square = function (board) {
     [150, -60],
     [120, -60]
   ];
+  this.name = "Square";
 }
 
 function Surrogate() {};
