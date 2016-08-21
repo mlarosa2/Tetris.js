@@ -67,7 +67,7 @@ Piece.prototype.isSpaceTaken = function (block) {
   let row    = Math.floor(block[1] / 30);
   column > 9 ? column = 9 : column;
   row < 0 ? row = 0 : row;
-  
+
   if (this.board[row][column].length > 0 || block[0] >= 300 || block[0] < 0) {
     return true;
   }
@@ -98,10 +98,10 @@ Piece.prototype.draw = function (ctx) {
     ctx.stroke();
   });
 };
-Piece.prototype.rotateLeft = function () {
+Piece.prototype.rotateLeft = function (paused) {
 
 };
-Piece.prototype.rotateRight = function() {
+Piece.prototype.rotateRight = function(paused) {
 
 };
 

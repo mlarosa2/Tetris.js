@@ -15,7 +15,8 @@ const RightL = function (board) {
 function Surrogate() {};
 Surrogate.prototype = Piece.prototype;
 RightL.prototype = new Surrogate();
-RightL.prototype.rotateRight = function() {
+RightL.prototype.rotateRight = function(paused) {
+  if (paused) return;
   const originBlock      = this.location[1];
   const originalLocation = [[], [], [], []];
   for (let k = 0; k < this.location.length; k++) {
@@ -99,7 +100,8 @@ RightL.prototype.rotateRight = function() {
     }
   }
 };
-RightL.prototype.rotateLeft = function () {
+RightL.prototype.rotateLeft = function (paused) {
+  if (paused) return;
   const originBlock      = this.location[1];
   const originalLocation = [[], [], [], []]
   for (let k = 0; k < this.location.length; k++) {
