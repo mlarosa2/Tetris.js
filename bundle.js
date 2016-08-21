@@ -86,7 +86,7 @@
 
 	Game.prototype.randomPiece = function () {
 	  const choose = Math.floor(Math.random() * NUM_PIECES + 1);
-	  switch (2) {
+	  switch (choose) {
 	    case 1:
 	      return new Square(this.board);
 	      break;
@@ -144,6 +144,10 @@
 	    } else {
 	      this.board.addPiece(lastPiece);
 	      this.addPiece();
+	      let fullRows = this.board.checkForFullRow();
+	      if (Object.keys(fullRows).length > 0) {
+	        this.board.clearRows(fullRows, ctx, Game.DIM_X, Game.BG_COLOR);
+	      }
 	    }
 	  }
 	};
@@ -202,13 +206,52 @@
 	  return boardAsArray;
 	};
 
+	Board.prototype.checkForFullRow = function () {
+	  const fullRows = {};
+
+	  for (let i = 0; i < boardAsArray.length - 1; i++) {
+	    let rowFull = true;
+	    for (let j = 0; j < boardAsArray[0].length; j++) {
+	      if (boardAsArray[i][j] === []) {
+	        rowFull = false;
+	      }
+	    }
+	    if (rowFull) {
+	      fullRows[i] = boardAsArray[i];
+	    }
+	  }
+	};
+
+	Board.prototype.clearRows = function (rows, ctx, dim_x, color) {
+	  for (let row in rows) {
+	    if (rows.hasOwnProperty(row)) {
+	      for (let i = 0; i < 10; i++) {
+	        rows[row][i][0].location.splice(indexOf([i * 30, row * 30]), 1);
+	        rows[row][i] = [];
+	      }
+	      ctx.clearRect(0, row * 30, dim_x, 30);
+	      ctx.fillStyle = color;
+	      ctx.fillRect(0, row * 30, dim_x, 30);
+	      for (let j = 0; j < row; j++) {
+	        for (let k = 0; k < 10; k++) {
+	          if (boardAsArray[j][k].length > 0) {
+	            boardAsArray[j][k][0].location[indexOf([j * 30, k * 30])].forEach( coord => {
+	              coord += 30;
+	            });
+	          }
+	        }
+	      }
+	    }
+	  }
+	};
+
 	Board.prototype.addPiece = function (piece) {
 	  piece.location.forEach( block => {
 	    const column = Math.floor(block[0] / 30);
 	    const row    = Math.floor(block[1] / 30);
 	    block[0]     = column * 30;
 	    block[1]     = row * 30;
-	    boardAsArray[row][column] = [piece.color];
+	    boardAsArray[row][column] = [piece];
 	  });
 	};
 

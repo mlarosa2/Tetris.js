@@ -22,7 +22,7 @@ Game.FALL_RATE = 2;
 
 Game.prototype.randomPiece = function () {
   const choose = Math.floor(Math.random() * NUM_PIECES + 1);
-  switch (2) {
+  switch (choose) {
     case 1:
       return new Square(this.board);
       break;
@@ -80,6 +80,10 @@ Game.prototype.step = function (delta) {
     } else {
       this.board.addPiece(lastPiece);
       this.addPiece();
+      let fullRows = this.board.checkForFullRow();
+      if (Object.keys(fullRows).length > 0) {
+        this.board.clearRows(fullRows, ctx, Game.DIM_X, Game.BG_COLOR);
+      }
     }
   }
 };
