@@ -15,93 +15,110 @@ const Tee = function (board) {
 function Surrogate() {};
 Surrogate.prototype = Piece.prototype;
 Tee.prototype = new Surrogate();
-Tee.prototype.rotateLeft = function () {
-  for (let i = 0; i < this.location.length; i++) {
-    if (i === 1) continue;
-    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 30)) {
-      this.location[i][0] -= 30;
-      this.location[i][1] += 30;
-      if (this.checkBlockLeft(this.location[i])) {
-        this.location[i][0] += 30;
-        this.location[i][1] -= 30;
+Tee.prototype.rotateLeft = function() {
+  const originBlock      = this.location[1];
+  const originalLocation = [[], [], [], []];
+  for (let k = 0; k < this.location.length; k++) {
+    for (let l = 0; l < 2; l++) {
+      originalLocation[k][l] = this.location[k][l];
+    }
+  }
+
+  for (let i = 0; i < this.location.length; i ++) {
+    let rotation;
+    switch (i) {
+      case 1:
+        rotation = 0;
         break;
-      }
+      default:
+        rotation = 30;
+    }
+
+    //block is above originBlock
+    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+      this.location[i][0] -= rotation;
+      this.location[i][1] += rotation;
       continue;
     }
-    if (this.location[i][0] === (this.location[1][0] - 30) && this.location[i][1] === this.location[1][1]) {
-      this.location[i][0] += 30;
-      this.location[i][1] += 30;
-      if (this.checkBlockLeft(this.location[i])) {
-        this.location[i][0] -= 30;
-        this.location[i][1] -= 30;
-        break;
-      }
+
+    //block is to left of originBlock
+    if (this.location[i][0] === originBlock[0] - 30 && this.location[i][1] === originBlock[1]) {
+      this.location[i][0] += rotation;
+      this.location[i][1] += rotation;
       continue;
     }
-    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 30)) {
-      this.location[i][0] += 30;
-      this.location[i][1] -= 30;
-      if (this.checkBlockLeft(this.location[i])) {
-        this.location[i][0] -= 30;
-        this.location[i][1] += 30;
-        break;
-      }
+
+    //block is below originBlock
+    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] + 30) {
+      this.location[i][0] += rotation;
+      this.location[i][1] -= rotation;
       continue;
     }
-    if (this.location[i][0] === (this.location[1][0] + 30) && this.location[i][1] === this.location[1][1]) {
-      this.location[i][0] -= 30;
-      this.location[i][1] -= 30;
-      if (this.checkBlockLeft(this.location[i])) {
-        this.location[i][0] += 30;
-        this.location[i][1] += 30;
-        break;
-      }
+
+    //block is to right of originBlock
+    if (this.location[i][0] === originBlock[0] + 30 && this.location[i][1] === originBlock[1]) {
+      this.location[i][0] -= rotation;
+      this.location[i][1] -= rotation;
       continue;
     }
   }
+
+  for (let j = 0; j < this.location.length; j++) {
+    if (this.isSpaceTaken(this.location[j])) {
+      this.location = originalLocation;
+    }
+  }
 };
-Tee.prototype.rotateRight = function() {
-  for (let i = 0; i < this.location.length; i++) {
-    if (i === 1) continue;
-    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] - 30)) {
-      this.location[i][0] += 30;
-      this.location[i][1] += 30;
-      if (this.checkBlockRight(this.location[i])) {
-        this.location[i][0] -= 30;
-        this.location[i][1] -= 30;
+Tee.prototype.rotateRight = function () {
+  const originBlock      = this.location[1];
+  const originalLocation = [[], [], [], []]
+  for (let k = 0; k < this.location.length; k++) {
+    for (let l = 0; l < 2; l++) {
+      originalLocation[k][l] = this.location[k][l];
+    }
+  }
+
+  for (let i = 0; i < this.location.length; i ++) {
+    let rotation;
+    switch (i) {
+      case 1:
+        rotation = 0;
         break;
-      };
+      default:
+        rotation = 30;
+    }
+
+    //block is above originBlock
+    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+      this.location[i][0] += rotation;
+      this.location[i][1] += rotation;
       continue;
     }
-    if (this.location[i][0] === (this.location[1][0] + 30) && this.location[i][1] === this.location[1][1]) {
-      this.location[i][0] -= 30;
-      this.location[i][1] += 30;
-      if (this.checkBlockRight(this.location[i])) {
-        this.location[i][0] += 30;
-        this.location[i][1] -= 30;
-        break;
-      }
+    //block is to right of originBlock
+    if (this.location[i][0] === originBlock[0] + 30 && this.location[i][1] === originBlock[1]) {
+      this.location[i][0] -= rotation;
+      this.location[i][1] += rotation;
       continue;
     }
-    if (this.location[i][0] === this.location[1][0] && this.location[i][1] === (this.location[1][1] + 30)) {
-      this.location[i][0] -= 30;
-      this.location[i][1] -= 30;
-      if (this.checkBlockRight(this.location[i])) {
-        this.location[i][0] += 30;
-        this.location[i][1] += 30;
-        break;
-      }
+
+    //block is below originBlock
+    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] + 30) {
+      this.location[i][0] -= rotation;
+      this.location[i][1] -= rotation;
       continue;
     }
-    if (this.location[i][0] === (this.location[1][0] - 30) && this.location[i][1] === this.location[1][1]) {
-      this.location[i][0] += 30;
-      this.location[i][1] -= 30;
-      if (this.checkBlockRight(this.location[i])) {
-        this.location[i][0] -= 30;
-        this.location[i][1] += 30;
-        break;
-      }
+
+    //block is to left of originBlock
+    if (this.location[i][0] === originBlock[0] - 30 && this.location[i][1] === originBlock[1]) {
+      this.location[i][0] += rotation;
+      this.location[i][1] -= rotation;
       continue;
+    }
+  }
+
+  for (let j = 0; j < this.location.length; j++) {
+    if (this.isSpaceTaken(this.location[j])) {
+      this.location = originalLocation;
     }
   }
 };

@@ -15,8 +15,8 @@ GameView.prototype.bindKeyHandlers = function () {
     key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
   });
 
-  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(); });
-  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(); });
+  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.ctx); });
+  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(this.ctx); });
 };
 
 GameView.prototype.start = function() {

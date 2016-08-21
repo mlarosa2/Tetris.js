@@ -62,29 +62,18 @@ Piece.prototype.checkColLeft = function () {
 
   return false;
 };
-Piece.prototype.checkBlockLeft = function(block) {
-  let blockLeft = Math.ceil(block[0] / 30) - 1;
-  let row       = Math.ceil(block[1] / 30);
-  blockLeft < 0 ? blockLeft = 0 : blockLeft;
+Piece.prototype.isSpaceTaken = function (block) {
+  let column = Math.abs(Math.floor(block[0] / 30));
+  let row    = Math.floor(block[1] / 30);
+  column > 9 ? column = 9 : column;
   row < 0 ? row = 0 : row;
-
-  if (this.board[row][blockLeft].length > 0 || block[0] < 0) {
+  
+  if (this.board[row][column].length > 0 || block[0] >= 300 || block[0] < 0) {
     return true;
   }
 
   return false;
-}
-Piece.prototype.checkBlockRight = function(block) {
-  let blockRight = Math.ceil(block[0] / 30) + 1;
-  let row       = Math.ceil(block[1] / 30);
-  blockRight > 9 ? blockRight = 9 : blockRight;
-  row < 0 ? row = 0 : row;
-  if (this.board[row][blockRight].length > 0 || block[0] >= 300) {
-    return true;
-  }
-
-  return false;
-}
+};
 Piece.prototype.checkColRight = function () {
   for (let i = 0; i < this.location.length; i++) {
     let columnRight = Math.ceil(this.location[i][0] / 30) + 1;

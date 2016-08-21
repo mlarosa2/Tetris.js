@@ -5,7 +5,7 @@ const LeftL  = require('./pieces/left_l');
 const RightL = require('./pieces/right_l');
 const LeftZ  = require('./pieces/left_z');
 const RightZ = require('./pieces/right_z');
-const Tee      = require('./pieces/t');
+const Tee    = require('./pieces/t');
 
 const NUM_PIECES = 7
 
