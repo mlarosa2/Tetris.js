@@ -15,8 +15,9 @@ GameView.prototype.bindKeyHandlers = function () {
     key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
   });
 
-  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.ctx); });
-  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(this.ctx); });
+  key("p", () => { this.game.togglePause(); });
+  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.game.paused); });
+  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(this.game.paused); });
 };
 
 GameView.prototype.start = function() {
@@ -28,7 +29,7 @@ GameView.prototype.start = function() {
 GameView.prototype.animate = function(time) {
   const timeDelta = time - this.lastTime;
 
-  this.game.step(timeDelta);
+  this.game.step(timeDelta, this.ctx);
   this.game.draw(this.ctx);
   this.lastTime = time
 

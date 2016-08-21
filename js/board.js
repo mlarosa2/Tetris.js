@@ -50,7 +50,7 @@ Board.prototype.checkForFullRow = function () {
   for (let i = 0; i < boardAsArray.length - 1; i++) {
     let rowFull = true;
     for (let j = 0; j < boardAsArray[0].length; j++) {
-      if (boardAsArray[i][j] === []) {
+      if (boardAsArray[i][j].length === 0) {
         rowFull = false;
       }
     }
@@ -58,24 +58,44 @@ Board.prototype.checkForFullRow = function () {
       fullRows[i] = boardAsArray[i];
     }
   }
+
+  return fullRows;
 };
 
 Board.prototype.clearRows = function (rows, ctx, dim_x, color) {
   for (let row in rows) {
     if (rows.hasOwnProperty(row)) {
       for (let i = 0; i < 10; i++) {
-        rows[row][i][0].location.splice(indexOf([i * 30, row * 30]), 1);
+        let index;
+        let piece = rows[row][i][0];
+        for (let h = 0; h < piece.location.length; h++) {
+          if (piece.location[h][0] === i * 30 && piece.location[h][1] === row * 30) {
+            index = h;
+          }
+        }
+        piece.location.splice(index, 1);
         rows[row][i] = [];
       }
-      ctx.clearRect(0, row * 30, dim_x, 30);
+
+      ctx.beginPath();
+      ctx.rect(0, row * 30, dim_x, 30);
       ctx.fillStyle = color;
-      ctx.fillRect(0, row * 30, dim_x, 30);
-      for (let j = 0; j < row; j++) {
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      for (let j = row - 1; j >= 0; j--) {
         for (let k = 0; k < 10; k++) {
           if (boardAsArray[j][k].length > 0) {
-            boardAsArray[j][k][0].location[indexOf([j * 30, k * 30])].forEach( coord => {
-              coord += 30;
-            });
+            let piece = boardAsArray[j][k][0];
+            boardAsArray[j][k] = [];
+            for (let l = 0; l < piece.location.length; l++) {
+              if (piece.location[l][0] === k * 30 && piece.location[l][1] === j * 30) {
+                piece.location[l][1] += 30;
+                boardAsArray[j + 1][k] = [piece];
+              }
+            }
           }
         }
       }
