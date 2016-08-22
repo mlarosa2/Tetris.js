@@ -1,5 +1,10 @@
 body {
   font-family : sans-serif;
+  background-color: #935d8c;
+  background-image: url("img/overlay.png"), -moz-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
+  background-image: url("img/overlay.png"), -webkit-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
+  background-image: url("img/overlay.png"), -ms-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
+  background-image: url("img/overlay.png"), linear-gradient(45deg, #e37682 15%, #5f4d93 85%);img
 }
 
 h3 {
@@ -10,6 +15,7 @@ main {
   margin: auto;
   width: 537px;
   position: relative;
+  margin-top: 65px;
 }
 main:after {
   content: " ";
@@ -52,4 +58,25 @@ main:after {
 .fa-ban {
   font-size: 25px;
   line-height: .8;
+}
+#next-piece {
+  width: 150px;
+  margin-left: 23px;
+  height: 150px;
+  position: relative;
+  background: white;
+}
+#next-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+
+}
+.next-piece {
+  text-align: center;
+  width: 200px;
+  float: left;
+  padding-left: 35px;
+  height: 200px;
 }
