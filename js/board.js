@@ -1,4 +1,4 @@
-const boardAsArray = [
+let boardAsArray = [
 // 0   1   2   3   4   5   6   7   8    9
   [[], [], [], [], [], [], [], [], [], []], // 0
   [[], [], [], [], [], [], [], [], [], []], // 1
@@ -24,7 +24,41 @@ const boardAsArray = [
 ];
 
 
-const Board = function () {}
+const Board = function () {
+  this.over = false;
+}
+
+Board.prototype.isOver = function () {
+  return this.over;
+};
+
+Board.prototype.reset = function () {
+  this.over = false;
+  boardAsArray = [
+  // 0   1   2   3   4   5   6   7   8    9
+    [[], [], [], [], [], [], [], [], [], []], // 0
+    [[], [], [], [], [], [], [], [], [], []], // 1
+    [[], [], [], [], [], [], [], [], [], []], // 2
+    [[], [], [], [], [], [], [], [], [], []], // 3
+    [[], [], [], [], [], [], [], [], [], []], // 4
+    [[], [], [], [], [], [], [], [], [], []], // 5
+    [[], [], [], [], [], [], [], [], [], []], // 6
+    [[], [], [], [], [], [], [], [], [], []], // 7
+    [[], [], [], [], [], [], [], [], [], []], // 8
+    [[], [], [], [], [], [], [], [], [], []], // 9
+    [[], [], [], [], [], [], [], [], [], []], // 10
+    [[], [], [], [], [], [], [], [], [], []], // 11
+    [[], [], [], [], [], [], [], [], [], []], // 12
+    [[], [], [], [], [], [], [], [], [], []], // 13
+    [[], [], [], [], [], [], [], [], [], []], // 14
+    [[], [], [], [], [], [], [], [], [], []], // 15
+    [[], [], [], [], [], [], [], [], [], []], // 16
+    [[], [], [], [], [], [], [], [], [], []], // 17
+    [[], [], [], [], [], [], [], [], [], []], // 18
+    [[], [], [], [], [], [], [], [], [], []], // 19
+    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
+  ];
+};
 
 Board.prototype.isNextRowSet = function (piece) {
   for (let i = 0; i < piece.location.length; i++) {
@@ -37,6 +71,10 @@ Board.prototype.isNextRowSet = function (piece) {
     }
   }
 
+  return false;
+};
+
+Board.prototype.checkForGameOver = function () {
   return false;
 };
 
@@ -104,6 +142,13 @@ Board.prototype.clearRows = function (rows, ctx, dim_x, color) {
 };
 
 Board.prototype.addPiece = function (piece) {
+  for (let i = 3; i >= 0; i--) {
+    if (piece.location[i][1] < 0) {
+      piece.location.splice(i, 1);
+      this.over = true;
+    }
+  }
+
   piece.location.forEach( block => {
     const column = Math.floor(block[0] / 30);
     const row    = Math.floor(block[1] / 30);

@@ -8,7 +8,8 @@ h3 {
 
 main {
   margin: auto;
-  width: 600px;
+  width: 537px;
+  position: relative;
 }
 main:after {
   content: " ";
@@ -19,11 +20,36 @@ main:after {
   float: left;
   text-align: center;
 }
+.score {
+  width: 200px;
+  padding-left: 35px;
+}
 #next-piece {
   width: 150px;
+  margin-left: 23px;
 }
 .next-piece {
   text-align: center;
-  width: 150px;
+  width: 200px;
   float: left;
+  padding-left: 35px;
+  height: 200px;
+}
+#volume {
+  cursor: pointer;
+  position: absolute;
+  bottom: 0px;
+  right: 159px;
+}
+.muted {
+  right: 139px !important;
+}
+.fa-stack {
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+}
+.fa-ban {
+  font-size: 25px;
+  line-height: .8;
 }

@@ -55,6 +55,31 @@
 	  const game    = new Game();
 	  new GameView(game, ctx).start();
 	});
+	
+	window.replay = function () {
+	  const canvas  = document.getElementById('canvas');
+	  canvas.width  = Game.DIM_X;
+	  canvas.height = Game.DIM_Y;
+	  const ctx     = canvas.getContext("2d");
+	  const game    = new Game();
+	  new GameView(game, ctx).start();
+	};
+	
+	
+	let mute  = document.getElementById("volume");
+	let audio = document.getElementById("theme");
+	
+	mute.addEventListener('click', function () {
+	  if (!audio.paused) {
+	    mute.innerHTML = '<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></i><i class="fa fa-ban fa-stack-1x"></i></span>&nbsp;&nbsp;Unmute</span>'
+	    mute.className = 'muted'
+	    audio.pause();
+	  } else {
+	    mute.innerHTML = '<i class="fa fa-music"></i>&nbsp;&nbsp;Mute';
+	    mute.className = '';
+	    audio.play();
+	  }
+	});
 
 
 /***/ },
@@ -79,7 +104,7 @@
 	  this.paused    = false;
 	  this.nextPiece = [];
 	  this.score     = 0;
-	  this.menu      = "main";
+	  this.menu      = 'main';
 	};
 	
 	Game.BG_COLOR         = '#FFFFFF';
@@ -90,6 +115,40 @@
 	
 	Game.prototype.togglePause = function () {
 	  this.paused = !this.paused;
+	};
+	
+	Game.prototype.renderPausedMenu = function (ctx) {
+	  ctx.beginPath();
+	  ctx.rect(50, 200, 200, 100 );
+	  ctx.fillStyle = 'white';
+	  ctx.fill();
+	  ctx.lineWidth = 2;
+	  ctx.strokeStyle = 'black';
+	  ctx.stroke();
+	  ctx.font = '30px sans-serif';
+	  ctx.strokeStyle = 'black';
+	  ctx.fillStyle = 'red';
+	  ctx.strokeText('PAUSED', 90, 260);
+	  ctx.fillText('PAUSED', 90, 260);
+	};
+	
+	Game.prototype.renderGameOverMenu = function (ctx) {
+	
+	  ctx.beginPath();
+	  ctx.rect(50, 200, 200, 100 );
+	  ctx.fillStyle = 'white';
+	  ctx.fill();
+	  ctx.lineWidth = 2;
+	  ctx.strokeStyle = 'black';
+	  ctx.stroke();
+	  ctx.font = '30px sans-serif';
+	  ctx.strokeStyle = 'black';
+	  ctx.fillStyle = 'red';
+	  ctx.strokeText('Game Over', 72, 250);
+	  ctx.fillText('Game Over', 72, 250);
+	  ctx.font = '15px sans-serif';
+	  ctx.fillStyle = 'black';
+	  ctx.fillText('Press "r" to replay.', 93, 275);
 	};
 	
 	Game.prototype.renderMainMenu = function (ctx) {
@@ -104,16 +163,16 @@
 	  ctx.font = '30px sans-serif';
 	  ctx.strokeStyle = 'black';
 	  ctx.fillStyle = 'red';
-	  ctx.strokeText('TETЯIS', 95, 250);
-	  ctx.fillText('TETЯIS', 95, 250);
+	  ctx.strokeText('TETЯIS.JS', 75, 250);
+	  ctx.fillText('TETЯIS.JS', 75, 250);
 	  ctx.font = '15px sans-serif';
 	  ctx.fillStyle = 'black';
 	  ctx.fillText('Press "s" to start.', 93, 275);
-	
 	};
 	
 	Game.prototype.removeMainMenu = function () {
-	  this.menu = "play";
+	  this.menu = 'play';
+	  document.getElementById('next-image').style.opacity = 1;
 	};
 	
 	Game.prototype.randomPiece = function () {
@@ -146,16 +205,20 @@
 	Game.prototype.addPiece = function () {
 	  let piece = this.nextPiece.shift();
 	  this.nextPiece.push(this.randomPiece());
-	  if (this.menu === "main") {
-	    document.getElementById("next-piece").innerHTML = `<img style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`;
+	  if (this.menu === 'main') {
+	    document.getElementById('next-piece').innerHTML = `<img id="next-image" style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`;
 	  } else {
-	    document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
+	    document.getElementById('next-piece').innerHTML = `<img id="next-image" src="./img/${this.nextPiece[0].name}.png">`;
 	  }
 	  this.pieces.push(piece);
 	};
 	
 	Game.prototype.setNextPiece = function () {
 	  this.nextPiece.push(this.randomPiece());
+	};
+	
+	Game.prototype.hideNextPiece = function () {
+	  document.getElementById('next-piece').innerHTML = `<img id="next-image" style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`
 	};
 	
 	Game.prototype.draw = function (ctx) {
@@ -170,18 +233,35 @@
 	  this.pieces.forEach( piece => {
 	    piece.draw(ctx);
 	  });
+	
+	  if (this.paused) {
+	    this.renderPausedMenu(ctx);
+	  }
+	
+	  if (this.menu === 'over') {
+	    this.hideNextPiece();
+	    this.renderGameOverMenu(ctx);
+	  }
 	};
 	
 	Game.prototype.setScore = function () {
-	  let scoreTag = document.getElementById("score");
+	  let scoreTag       = document.getElementById('score');
 	  scoreTag.innerHTML = this.score;
+	  this.increaseFallRate();
 	};
+	
+	Game.prototype.increaseFallRate = function () {
+	  if (this.score % 2500 === 0 && this.score !== 0) {
+	    Game.FALL_RATE += 1;
+	    Game.OriginalFallRate += 1;
+	  }
+	}
 	
 	Game.prototype.movePiece = function (delta) {
 	  const piece = this.pieces[this.pieces.length - 1];
 	  const board = this.board;
 	  for (let i = 0; i < piece.location.length; i++) {
-	    if (this.paused || this.menu === "main") {
+	    if (this.paused || this.menu === 'main' || this.menu === 'over') {
 	      Game.FALL_RATE = 0;
 	    } else {
 	      Game.FALL_RATE = Game.OriginalFallRate;
@@ -190,7 +270,28 @@
 	  }
 	};
 	
+	Game.prototype.checkForGameOver = function () {
+	  if (this.board.isOver()) {
+	    this.menu = 'over';
+	  }
+	};
+	
+	Game.prototype.reset = function (ctx) {
+	  this.menu             = 'replay';
+	  this.pieces           = [];
+	  Game.FALL_RATE        = 2;
+	  Game.OriginalFallRate = 2;
+	  this.score            = 0;
+	  this.nextPiece        = [];
+	  this.setScore();
+	  this.board.reset();
+	};
+	
 	Game.prototype.step = function (delta, ctx) {
+	  if (this.menu === 'replay') {
+	    this.draw(ctx);
+	    this.menu = 'play';
+	  }
 	  const lastPiece = this.pieces[this.pieces.length - 1];
 	  if (this.pieces.length == 0) {
 	    this.setNextPiece();
@@ -199,8 +300,14 @@
 	    if (this.pieces.length > 0 && !this.board.isNextRowSet(lastPiece)) {
 	      this.movePiece(delta);
 	    } else {
-	      this.board.addPiece(lastPiece);
-	      this.addPiece();
+	      this.checkForGameOver();
+	      if (this.menu !== 'over') {
+	        this.board.addPiece(lastPiece);
+	        this.addPiece();
+	      }
+	      if (this.menu === 'over') {
+	        this.movePiece(delta);
+	      }
 	      let fullRows = this.board.checkForFullRow();
 	      if (Object.keys(fullRows).length > 0) {
 	        this.score += Object.keys(fullRows).length * 100;
@@ -220,7 +327,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	const boardAsArray = [
+	let boardAsArray = [
 	// 0   1   2   3   4   5   6   7   8    9
 	  [[], [], [], [], [], [], [], [], [], []], // 0
 	  [[], [], [], [], [], [], [], [], [], []], // 1
@@ -246,7 +353,41 @@
 	];
 	
 	
-	const Board = function () {}
+	const Board = function () {
+	  this.over = false;
+	}
+	
+	Board.prototype.isOver = function () {
+	  return this.over;
+	};
+	
+	Board.prototype.reset = function () {
+	  this.over = false;
+	  boardAsArray = [
+	  // 0   1   2   3   4   5   6   7   8    9
+	    [[], [], [], [], [], [], [], [], [], []], // 0
+	    [[], [], [], [], [], [], [], [], [], []], // 1
+	    [[], [], [], [], [], [], [], [], [], []], // 2
+	    [[], [], [], [], [], [], [], [], [], []], // 3
+	    [[], [], [], [], [], [], [], [], [], []], // 4
+	    [[], [], [], [], [], [], [], [], [], []], // 5
+	    [[], [], [], [], [], [], [], [], [], []], // 6
+	    [[], [], [], [], [], [], [], [], [], []], // 7
+	    [[], [], [], [], [], [], [], [], [], []], // 8
+	    [[], [], [], [], [], [], [], [], [], []], // 9
+	    [[], [], [], [], [], [], [], [], [], []], // 10
+	    [[], [], [], [], [], [], [], [], [], []], // 11
+	    [[], [], [], [], [], [], [], [], [], []], // 12
+	    [[], [], [], [], [], [], [], [], [], []], // 13
+	    [[], [], [], [], [], [], [], [], [], []], // 14
+	    [[], [], [], [], [], [], [], [], [], []], // 15
+	    [[], [], [], [], [], [], [], [], [], []], // 16
+	    [[], [], [], [], [], [], [], [], [], []], // 17
+	    [[], [], [], [], [], [], [], [], [], []], // 18
+	    [[], [], [], [], [], [], [], [], [], []], // 19
+	    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
+	  ];
+	};
 	
 	Board.prototype.isNextRowSet = function (piece) {
 	  for (let i = 0; i < piece.location.length; i++) {
@@ -259,6 +400,10 @@
 	    }
 	  }
 	
+	  return false;
+	};
+	
+	Board.prototype.checkForGameOver = function () {
 	  return false;
 	};
 	
@@ -326,6 +471,13 @@
 	};
 	
 	Board.prototype.addPiece = function (piece) {
+	  for (let i = 3; i >= 0; i--) {
+	    if (piece.location[i][1] < 0) {
+	      piece.location.splice(i, 1);
+	      this.over = true;
+	    }
+	  }
+	
 	  piece.location.forEach( block => {
 	    const column = Math.floor(block[0] / 30);
 	    const row    = Math.floor(block[1] / 30);
@@ -1617,27 +1769,33 @@
 	};
 	
 	GameView.MOVES = {
-	  "a" : "left",
-	  "s" : "down",
-	  "d" : "right",
+	  'a' : 'left',
+	  's' : 'down',
+	  'd' : 'right',
 	};
+	
 	
 	GameView.prototype.bindKeyHandlers = function () {
-	  if (this.game.menu === "main") {
-	    key("s", () => { this.game.removeMainMenu(); });
-	  } else {
-	    Object.keys(GameView.MOVES).forEach( k => {
-	      let direction = GameView.MOVES[k];
-	      key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
-	    });
+	  if (this.game.menu === 'main') {
+	    key('s', () => { this.game.removeMainMenu(); });
 	  }
 	
-	  key("p", () => { this.game.togglePause(); });
-	  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.game.paused); });
-	  key("e", () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(this.game.paused); });
+	  Object.keys(GameView.MOVES).forEach( k => {
+	    let direction = GameView.MOVES[k];
+	    key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
+	  });
+	  key('r', () => { this.replay(); });
+	  key('p', () => { this.game.togglePause(); });
+	  key('q', () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.game.paused); });
+	  key('e', () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(this.game.paused); });
 	};
 	
-	GameView.prototype.start = function() {
+	GameView.prototype.replay = function () {
+	  if (this.game.menu !== 'over') return;
+	  this.game.reset(this.ctx);
+	};
+	
+	GameView.prototype.start = function () {
 	  this.bindKeyHandlers();
 	  this.lastTime = 0;
 	  requestAnimationFrame(this.animate.bind(this));
