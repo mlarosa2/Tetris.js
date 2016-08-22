@@ -45,7 +45,6 @@ Game.prototype.renderPausedMenu = function (ctx) {
 };
 
 Game.prototype.renderGameOverMenu = function (ctx) {
-
   ctx.beginPath();
   ctx.rect(50, 200, 200, 100 );
   ctx.fillStyle = 'white';
@@ -66,7 +65,7 @@ Game.prototype.renderGameOverMenu = function (ctx) {
 Game.prototype.renderMainMenu = function (ctx) {
   if (this.menu !== "main") return;
   ctx.beginPath();
-  ctx.rect(50, 200, 200, 100 );
+  ctx.rect(50, 200, 200, 150);
   ctx.fillStyle = 'white';
   ctx.fill();
   ctx.lineWidth = 2;
@@ -80,6 +79,8 @@ Game.prototype.renderMainMenu = function (ctx) {
   ctx.font = '15px sans-serif';
   ctx.fillStyle = 'black';
   ctx.fillText('Press "s" to start.', 93, 275);
+  ctx.fillText('wasd - direction', 95, 300);
+  ctx.fillText('q/e - rotate left/right', 85, 325);
 };
 
 Game.prototype.removeMainMenu = function () {
