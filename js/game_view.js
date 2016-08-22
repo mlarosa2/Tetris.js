@@ -10,10 +10,14 @@ GameView.MOVES = {
 };
 
 GameView.prototype.bindKeyHandlers = function () {
-  Object.keys(GameView.MOVES).forEach( k => {
-    let direction = GameView.MOVES[k];
-    key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
-  });
+  if (this.game.menu === "main") {
+    key("s", () => { this.game.removeMainMenu(); });
+  } else {
+    Object.keys(GameView.MOVES).forEach( k => {
+      let direction = GameView.MOVES[k];
+      key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
+    });
+  }
 
   key("p", () => { this.game.togglePause(); });
   key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.game.paused); });

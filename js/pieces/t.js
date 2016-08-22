@@ -5,10 +5,10 @@ const Tee = function (board) {
   Piece.call(this, board);
   this.color = colorConstants.PINK;
   this.location = [
+    [120, -90],
     [120, -60],
-    [120, -30],
-    [150, -30],
-    [90, -30]
+    [150, -60],
+    [90, -60]
   ];
   this.name = "Tee";
 }

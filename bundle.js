@@ -79,6 +79,7 @@
 	  this.paused    = false;
 	  this.nextPiece = [];
 	  this.score     = 0;
+	  this.menu      = "main";
 	};
 	
 	Game.BG_COLOR         = '#FFFFFF';
@@ -89,6 +90,30 @@
 	
 	Game.prototype.togglePause = function () {
 	  this.paused = !this.paused;
+	};
+	
+	Game.prototype.renderMainMenu = function (ctx) {
+	  if (this.menu !== "main") return;
+	  ctx.beginPath();
+	  ctx.rect(50, 200, 200, 100 );
+	  ctx.fillStyle = 'white';
+	  ctx.fill();
+	  ctx.lineWidth = 2;
+	  ctx.strokeStyle = 'black';
+	  ctx.stroke();
+	  ctx.font = '30px sans-serif';
+	  ctx.strokeStyle = 'black';
+	  ctx.fillStyle = 'red';
+	  ctx.strokeText('TETЯIS', 95, 250);
+	  ctx.fillText('TETЯIS', 95, 250);
+	  ctx.font = '15px sans-serif';
+	  ctx.fillStyle = 'black';
+	  ctx.fillText('Press "s" to start.', 93, 275);
+	
+	};
+	
+	Game.prototype.removeMainMenu = function () {
+	  this.menu = "play";
 	};
 	
 	Game.prototype.randomPiece = function () {
@@ -121,7 +146,11 @@
 	Game.prototype.addPiece = function () {
 	  let piece = this.nextPiece.shift();
 	  this.nextPiece.push(this.randomPiece());
-	  document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
+	  if (this.menu === "main") {
+	    document.getElementById("next-piece").innerHTML = `<img style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`;
+	  } else {
+	    document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
+	  }
 	  this.pieces.push(piece);
 	};
 	
@@ -133,6 +162,10 @@
 	  ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
 	  ctx.fillStyle = Game.BG_COLOR;
 	  ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+	
+	  if (this.menu === 'main') {
+	    this.renderMainMenu(ctx);
+	  }
 	
 	  this.pieces.forEach( piece => {
 	    piece.draw(ctx);
@@ -148,7 +181,7 @@
 	  const piece = this.pieces[this.pieces.length - 1];
 	  const board = this.board;
 	  for (let i = 0; i < piece.location.length; i++) {
-	    if (this.paused) {
+	    if (this.paused || this.menu === "main") {
 	      Game.FALL_RATE = 0;
 	    } else {
 	      Game.FALL_RATE = Game.OriginalFallRate;
@@ -316,10 +349,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.RED;
 	  this.location = [
-	    [150, -30],
-	    [120, -30],
 	    [150, -60],
-	    [120, -60]
+	    [120, -60],
+	    [150, -90],
+	    [120, -90]
 	  ];
 	  this.name = "Square";
 	}
@@ -473,10 +506,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.BLUE;
 	  this.location = [
+	    [120, -150],
 	    [120, -120],
 	    [120, -90],
-	    [120, -60],
-	    [120, -30]
+	    [120, -60]
 	  ];
 	  this.name = "Line"
 	}
@@ -675,10 +708,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.GREEN;
 	  this.location = [
+	    [120, -120],
 	    [120, -90],
 	    [120, -60],
-	    [120, -30],
-	    [90, -30]
+	    [90, -60]
 	  ];
 	  this.name = "LeftL";
 	}
@@ -869,10 +902,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.PURPLE;
 	  this.location = [
+	    [120, -120],
 	    [120, -90],
 	    [120, -60],
-	    [120, -30],
-	    [150, -30]
+	    [150, -60]
 	  ];
 	  this.name = "RightL";
 	}
@@ -1063,10 +1096,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.YELLOW;
 	  this.location = [
-	    [90, -60],
+	    [90, -90],
+	    [120, -90],
 	    [120, -60],
-	    [120, -30],
-	    [150, -30]
+	    [150, -60]
 	  ];
 	  this.name = "LeftZ";
 	}
@@ -1257,10 +1290,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.ORANGE;
 	  this.location = [
-	    [150, -60],
+	    [150, -90],
+	    [120, -90],
 	    [120, -60],
-	    [120, -30],
-	    [90, -30]
+	    [90, -60]
 	  ];
 	  this.name = "RightZ";
 	}
@@ -1451,10 +1484,10 @@
 	  Piece.call(this, board);
 	  this.color = colorConstants.PINK;
 	  this.location = [
+	    [120, -90],
 	    [120, -60],
-	    [120, -30],
-	    [150, -30],
-	    [90, -30]
+	    [150, -60],
+	    [90, -60]
 	  ];
 	  this.name = "Tee";
 	}
@@ -1590,10 +1623,14 @@
 	};
 	
 	GameView.prototype.bindKeyHandlers = function () {
-	  Object.keys(GameView.MOVES).forEach( k => {
-	    let direction = GameView.MOVES[k];
-	    key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
-	  });
+	  if (this.game.menu === "main") {
+	    key("s", () => { this.game.removeMainMenu(); });
+	  } else {
+	    Object.keys(GameView.MOVES).forEach( k => {
+	      let direction = GameView.MOVES[k];
+	      key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
+	    });
+	  }
 	
 	  key("p", () => { this.game.togglePause(); });
 	  key("q", () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.game.paused); });

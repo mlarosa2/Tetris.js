@@ -5,10 +5,10 @@ const LeftL = function (board) {
   Piece.call(this, board);
   this.color = colorConstants.GREEN;
   this.location = [
+    [120, -120],
     [120, -90],
     [120, -60],
-    [120, -30],
-    [90, -30]
+    [90, -60]
   ];
   this.name = "LeftL";
 }

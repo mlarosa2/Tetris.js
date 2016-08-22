@@ -5,10 +5,10 @@ const Square = function (board) {
   Piece.call(this, board);
   this.color = colorConstants.RED;
   this.location = [
-    [150, -30],
-    [120, -30],
     [150, -60],
-    [120, -60]
+    [120, -60],
+    [150, -90],
+    [120, -90]
   ];
   this.name = "Square";
 }

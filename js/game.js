@@ -16,6 +16,7 @@ const Game = function () {
   this.paused    = false;
   this.nextPiece = [];
   this.score     = 0;
+  this.menu      = "main";
 };
 
 Game.BG_COLOR         = '#FFFFFF';
@@ -26,6 +27,30 @@ Game.OriginalFallRate = 2;
 
 Game.prototype.togglePause = function () {
   this.paused = !this.paused;
+};
+
+Game.prototype.renderMainMenu = function (ctx) {
+  if (this.menu !== "main") return;
+  ctx.beginPath();
+  ctx.rect(50, 200, 200, 100 );
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = 'black';
+  ctx.stroke();
+  ctx.font = '30px sans-serif';
+  ctx.strokeStyle = 'black';
+  ctx.fillStyle = 'red';
+  ctx.strokeText('TETЯIS', 95, 250);
+  ctx.fillText('TETЯIS', 95, 250);
+  ctx.font = '15px sans-serif';
+  ctx.fillStyle = 'black';
+  ctx.fillText('Press "s" to start.', 93, 275);
+
+};
+
+Game.prototype.removeMainMenu = function () {
+  this.menu = "play";
 };
 
 Game.prototype.randomPiece = function () {
@@ -58,7 +83,11 @@ Game.prototype.randomPiece = function () {
 Game.prototype.addPiece = function () {
   let piece = this.nextPiece.shift();
   this.nextPiece.push(this.randomPiece());
-  document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
+  if (this.menu === "main") {
+    document.getElementById("next-piece").innerHTML = `<img style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`;
+  } else {
+    document.getElementById("next-piece").innerHTML = `<img src="./img/${this.nextPiece[0].name}.png">`;
+  }
   this.pieces.push(piece);
 };
 
@@ -70,6 +99,10 @@ Game.prototype.draw = function (ctx) {
   ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
   ctx.fillStyle = Game.BG_COLOR;
   ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+
+  if (this.menu === 'main') {
+    this.renderMainMenu(ctx);
+  }
 
   this.pieces.forEach( piece => {
     piece.draw(ctx);
@@ -85,7 +118,7 @@ Game.prototype.movePiece = function (delta) {
   const piece = this.pieces[this.pieces.length - 1];
   const board = this.board;
   for (let i = 0; i < piece.location.length; i++) {
-    if (this.paused) {
+    if (this.paused || this.menu === "main") {
       Game.FALL_RATE = 0;
     } else {
       Game.FALL_RATE = Game.OriginalFallRate;

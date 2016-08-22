@@ -5,10 +5,10 @@ const RightZ = function (board) {
   Piece.call(this, board);
   this.color = colorConstants.ORANGE;
   this.location = [
-    [150, -60],
+    [150, -90],
+    [120, -90],
     [120, -60],
-    [120, -30],
-    [90, -30]
+    [90, -60]
   ];
   this.name = "RightZ";
 }
