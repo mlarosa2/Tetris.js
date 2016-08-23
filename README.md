@@ -15,7 +15,7 @@ A browser Tetris game implemented with vanilla JavaScript and the HTML5 Canvas A
 
 ## Screenshots
 
-[playing]  [game-over]
+![playing]  ![game-over]
 
 
 [playing]: ./playing.png
