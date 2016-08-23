@@ -18,5 +18,5 @@ A browser Tetris game implemented with vanilla JavaScript and the HTML5 Canvas A
 [playing]  [game-over]
 
 
-[playing] ./playing.png
-[game-over] ./gameover.png
+[playing]: ./playing.png
+[game-over]: ./gameover.png
