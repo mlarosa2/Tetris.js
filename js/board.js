@@ -74,10 +74,6 @@ Board.prototype.isNextRowSet = function (piece) {
   return false;
 };
 
-Board.prototype.checkForGameOver = function () {
-  return false;
-};
-
 Board.prototype.getBoard = function () {
   return boardAsArray;
 };
