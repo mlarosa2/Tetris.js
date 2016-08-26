@@ -44,25 +44,27 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Game     = __webpack_require__(1);
-	const GameView = __webpack_require__(12);
+	'use strict';
+	
+	var Game = __webpack_require__(1);
+	var GameView = __webpack_require__(12);
 	
 	document.addEventListener("DOMContentLoaded", function () {
-	  const canvas  = document.getElementById('canvas');
-	  canvas.width  = Game.DIM_X;
+	  var canvas = document.getElementById('canvas');
+	  canvas.width = Game.DIM_X;
 	  canvas.height = Game.DIM_Y;
-	  const ctx     = canvas.getContext("2d");
-	  const game    = new Game();
+	  var ctx = canvas.getContext("2d");
+	  var game = new Game();
 	  new GameView(game, ctx).start();
 	});
 	
-	let mute  = document.getElementById("volume");
-	let audio = document.getElementById("theme");
+	var mute = document.getElementById("volume");
+	var audio = document.getElementById("theme");
 	
 	mute.addEventListener('click', function () {
 	  if (!audio.paused) {
-	    mute.innerHTML = '<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></i><i class="fa fa-ban fa-stack-1x"></i></span> Unmute</span>'
-	    mute.className = 'muted'
+	    mute.innerHTML = '<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></i><i class="fa fa-ban fa-stack-1x"></i></span> Unmute</span>';
+	    mute.className = 'muted';
 	    audio.pause();
 	  } else {
 	    mute.innerHTML = '<i class="fa fa-music"></i> Mute';
@@ -71,36 +73,37 @@
 	  }
 	});
 
-
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Board  = __webpack_require__(2);
-	const Square = __webpack_require__(3);
-	const Line   = __webpack_require__(6);
-	const LeftL  = __webpack_require__(7);
-	const RightL = __webpack_require__(8);
-	const LeftZ  = __webpack_require__(9);
-	const RightZ = __webpack_require__(10);
-	const Tee    = __webpack_require__(11);
+	'use strict';
 	
-	const NUM_PIECES = 7
+	var Board = __webpack_require__(2);
+	var Square = __webpack_require__(3);
+	var Line = __webpack_require__(6);
+	var LeftL = __webpack_require__(7);
+	var RightL = __webpack_require__(8);
+	var LeftZ = __webpack_require__(9);
+	var RightZ = __webpack_require__(10);
+	var Tee = __webpack_require__(11);
 	
-	const Game = function () {
-	  this.board     = new Board();
-	  this.pieces    = [];
-	  this.score     = 0;
-	  this.paused    = false;
+	var NUM_PIECES = 7;
+	
+	var Game = function Game() {
+	  this.board = new Board();
+	  this.pieces = [];
+	  this.score = 0;
+	  this.paused = false;
 	  this.nextPiece = [];
-	  this.score     = 0;
-	  this.menu      = 'main';
+	  this.score = 0;
+	  this.menu = 'main';
 	};
 	
-	Game.BG_COLOR         = '#FAFAFA';
-	Game.DIM_X            = 300;
-	Game.DIM_Y            = 600;
-	Game.FALL_RATE        = 2;
+	Game.BG_COLOR = '#FAFAFA';
+	Game.DIM_X = 300;
+	Game.DIM_Y = 600;
+	Game.FALL_RATE = 2;
 	Game.OriginalFallRate = 2;
 	
 	Game.prototype.togglePause = function () {
@@ -109,7 +112,7 @@
 	
 	Game.prototype.renderPausedMenu = function (ctx) {
 	  ctx.beginPath();
-	  ctx.rect(50, 200, 200, 100 );
+	  ctx.rect(50, 200, 200, 100);
 	  ctx.fillStyle = Game.BG_COLOR;
 	  ctx.fill();
 	  ctx.lineWidth = 2;
@@ -124,7 +127,7 @@
 	
 	Game.prototype.renderGameOverMenu = function (ctx) {
 	  ctx.beginPath();
-	  ctx.rect(50, 200, 200, 100 );
+	  ctx.rect(50, 200, 200, 100);
 	  ctx.fillStyle = Game.BG_COLOR;
 	  ctx.fill();
 	  ctx.lineWidth = 2;
@@ -167,7 +170,7 @@
 	};
 	
 	Game.prototype.randomPiece = function () {
-	  const choose = Math.floor(Math.random() * NUM_PIECES + 1);
+	  var choose = Math.floor(Math.random() * NUM_PIECES + 1);
 	  switch (choose) {
 	    case 1:
 	      return new Square(this.board);
@@ -194,12 +197,12 @@
 	};
 	
 	Game.prototype.addPiece = function () {
-	  let piece = this.nextPiece.shift();
+	  var piece = this.nextPiece.shift();
 	  this.nextPiece.push(this.randomPiece());
 	  if (this.menu === 'main') {
-	    document.getElementById('next-piece').innerHTML = `<img id="next-image" style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`;
+	    document.getElementById('next-piece').innerHTML = '<img id="next-image" style="opacity:0" src="./img/' + this.nextPiece[0].name + '.png">';
 	  } else {
-	    document.getElementById('next-piece').innerHTML = `<img id="next-image" src="./img/${this.nextPiece[0].name}.png">`;
+	    document.getElementById('next-piece').innerHTML = '<img id="next-image" src="./img/' + this.nextPiece[0].name + '.png">';
 	  }
 	  this.pieces.push(piece);
 	};
@@ -209,7 +212,7 @@
 	};
 	
 	Game.prototype.hideNextPiece = function () {
-	  document.getElementById('next-piece').innerHTML = `<img id="next-image" style="opacity:0" src="./img/${this.nextPiece[0].name}.png">`
+	  document.getElementById('next-piece').innerHTML = '<img id="next-image" style="opacity:0" src="./img/' + this.nextPiece[0].name + '.png">';
 	};
 	
 	Game.prototype.draw = function (ctx) {
@@ -221,7 +224,7 @@
 	    this.renderMainMenu(ctx);
 	  }
 	
-	  this.pieces.forEach( piece => {
+	  this.pieces.forEach(function (piece) {
 	    piece.draw(ctx);
 	  });
 	
@@ -236,7 +239,7 @@
 	};
 	
 	Game.prototype.setScore = function () {
-	  let scoreTag       = document.getElementById('score');
+	  var scoreTag = document.getElementById('score');
 	  scoreTag.innerHTML = this.score;
 	  this.increaseFallRate();
 	};
@@ -246,12 +249,12 @@
 	    Game.FALL_RATE += 1;
 	    Game.OriginalFallRate += 1;
 	  }
-	}
+	};
 	
 	Game.prototype.movePiece = function (delta) {
-	  const piece = this.pieces[this.pieces.length - 1];
-	  const board = this.board;
-	  for (let i = 0; i < piece.location.length; i++) {
+	  var piece = this.pieces[this.pieces.length - 1];
+	  var board = this.board;
+	  for (var i = 0; i < piece.location.length; i++) {
 	    if (this.paused || this.menu === 'main' || this.menu === 'over') {
 	      Game.FALL_RATE = 0;
 	    } else {
@@ -268,12 +271,12 @@
 	};
 	
 	Game.prototype.reset = function (ctx) {
-	  this.menu             = 'replay';
-	  this.pieces           = [];
-	  Game.FALL_RATE        = 2;
+	  this.menu = 'replay';
+	  this.pieces = [];
+	  Game.FALL_RATE = 2;
 	  Game.OriginalFallRate = 2;
-	  this.score            = 0;
-	  this.nextPiece        = [];
+	  this.score = 0;
+	  this.nextPiece = [];
 	  this.setScore();
 	  this.board.reset();
 	};
@@ -283,7 +286,7 @@
 	    this.draw(ctx);
 	    this.menu = 'play';
 	  }
-	  const lastPiece = this.pieces[this.pieces.length - 1];
+	  var lastPiece = this.pieces[this.pieces.length - 1];
 	  if (this.pieces.length == 0) {
 	    this.setNextPiece();
 	    this.addPiece();
@@ -299,7 +302,7 @@
 	      if (this.menu === 'over') {
 	        this.movePiece(delta);
 	      }
-	      let fullRows = this.board.checkForFullRow();
+	      var fullRows = this.board.checkForFullRow();
 	      if (Object.keys(fullRows).length > 0) {
 	        this.score += Object.keys(fullRows).length * 100;
 	        if (Object.keys(fullRows).length === 4) this.score += 400;
@@ -310,16 +313,50 @@
 	  }
 	};
 	
-	
 	module.exports = Game;
-
 
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
 
-	let boardAsArray = [
+	"use strict";
+	
+	var boardAsArray = [
 	// 0   1   2   3   4   5   6   7   8    9
+	[[], [], [], [], [], [], [], [], [], []], // 0
+	[[], [], [], [], [], [], [], [], [], []], // 1
+	[[], [], [], [], [], [], [], [], [], []], // 2
+	[[], [], [], [], [], [], [], [], [], []], // 3
+	[[], [], [], [], [], [], [], [], [], []], // 4
+	[[], [], [], [], [], [], [], [], [], []], // 5
+	[[], [], [], [], [], [], [], [], [], []], // 6
+	[[], [], [], [], [], [], [], [], [], []], // 7
+	[[], [], [], [], [], [], [], [], [], []], // 8
+	[[], [], [], [], [], [], [], [], [], []], // 9
+	[[], [], [], [], [], [], [], [], [], []], // 10
+	[[], [], [], [], [], [], [], [], [], []], // 11
+	[[], [], [], [], [], [], [], [], [], []], // 12
+	[[], [], [], [], [], [], [], [], [], []], // 13
+	[[], [], [], [], [], [], [], [], [], []], // 14
+	[[], [], [], [], [], [], [], [], [], []], // 15
+	[[], [], [], [], [], [], [], [], [], []], // 16
+	[[], [], [], [], [], [], [], [], [], []], // 17
+	[[], [], [], [], [], [], [], [], [], []], // 18
+	[[], [], [], [], [], [], [], [], [], []], // 19
+	[[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]];
+	
+	var Board = function Board() {
+	  this.over = false;
+	};
+	
+	Board.prototype.isOver = function () {
+	  return this.over;
+	};
+	
+	Board.prototype.reset = function () {
+	  this.over = false;
+	  boardAsArray = [
+	  // 0   1   2   3   4   5   6   7   8    9
 	  [[], [], [], [], [], [], [], [], [], []], // 0
 	  [[], [], [], [], [], [], [], [], [], []], // 1
 	  [[], [], [], [], [], [], [], [], [], []], // 2
@@ -340,50 +377,13 @@
 	  [[], [], [], [], [], [], [], [], [], []], // 17
 	  [[], [], [], [], [], [], [], [], [], []], // 18
 	  [[], [], [], [], [], [], [], [], [], []], // 19
-	  [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
-	];
-	
-	
-	const Board = function () {
-	  this.over = false;
-	}
-	
-	Board.prototype.isOver = function () {
-	  return this.over;
-	};
-	
-	Board.prototype.reset = function () {
-	  this.over = false;
-	  boardAsArray = [
-	  // 0   1   2   3   4   5   6   7   8    9
-	    [[], [], [], [], [], [], [], [], [], []], // 0
-	    [[], [], [], [], [], [], [], [], [], []], // 1
-	    [[], [], [], [], [], [], [], [], [], []], // 2
-	    [[], [], [], [], [], [], [], [], [], []], // 3
-	    [[], [], [], [], [], [], [], [], [], []], // 4
-	    [[], [], [], [], [], [], [], [], [], []], // 5
-	    [[], [], [], [], [], [], [], [], [], []], // 6
-	    [[], [], [], [], [], [], [], [], [], []], // 7
-	    [[], [], [], [], [], [], [], [], [], []], // 8
-	    [[], [], [], [], [], [], [], [], [], []], // 9
-	    [[], [], [], [], [], [], [], [], [], []], // 10
-	    [[], [], [], [], [], [], [], [], [], []], // 11
-	    [[], [], [], [], [], [], [], [], [], []], // 12
-	    [[], [], [], [], [], [], [], [], [], []], // 13
-	    [[], [], [], [], [], [], [], [], [], []], // 14
-	    [[], [], [], [], [], [], [], [], [], []], // 15
-	    [[], [], [], [], [], [], [], [], [], []], // 16
-	    [[], [], [], [], [], [], [], [], [], []], // 17
-	    [[], [], [], [], [], [], [], [], [], []], // 18
-	    [[], [], [], [], [], [], [], [], [], []], // 19
-	    [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
-	  ];
+	  [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]];
 	};
 	
 	Board.prototype.isNextRowSet = function (piece) {
-	  for (let i = 0; i < piece.location.length; i++) {
-	    let column = Math.abs(Math.floor(piece.location[i][0] / 30));
-	    let row    = Math.floor(piece.location[i][1] / 30) + 1;
+	  for (var i = 0; i < piece.location.length; i++) {
+	    var column = Math.abs(Math.floor(piece.location[i][0] / 30));
+	    var row = Math.floor(piece.location[i][1] / 30) + 1;
 	    column > 9 ? column = 9 : column;
 	    row < 0 ? row = 0 : row;
 	    if (boardAsArray[row][column].length > 0) {
@@ -399,11 +399,11 @@
 	};
 	
 	Board.prototype.checkForFullRow = function () {
-	  const fullRows = {};
+	  var fullRows = {};
 	
-	  for (let i = 0; i < boardAsArray.length - 1; i++) {
-	    let rowFull = true;
-	    for (let j = 0; j < boardAsArray[0].length; j++) {
+	  for (var i = 0; i < boardAsArray.length - 1; i++) {
+	    var rowFull = true;
+	    for (var j = 0; j < boardAsArray[0].length; j++) {
 	      if (boardAsArray[i][j].length === 0) {
 	        rowFull = false;
 	      }
@@ -417,12 +417,12 @@
 	};
 	
 	Board.prototype.clearRows = function (rows, ctx, dim_x, color) {
-	  for (let row in rows) {
+	  for (var row in rows) {
 	    if (rows.hasOwnProperty(row)) {
-	      for (let i = 0; i < 10; i++) {
-	        let index;
-	        let piece = rows[row][i][0];
-	        for (let h = 0; h < piece.location.length; h++) {
+	      for (var i = 0; i < 10; i++) {
+	        var index = void 0;
+	        var piece = rows[row][i][0];
+	        for (var h = 0; h < piece.location.length; h++) {
 	          if (piece.location[h][0] === i * 30 && piece.location[h][1] === row * 30) {
 	            index = h;
 	          }
@@ -439,15 +439,15 @@
 	      ctx.strokeStyle = color;
 	      ctx.stroke();
 	
-	      for (let j = row - 1; j >= 0; j--) {
-	        for (let k = 0; k < 10; k++) {
+	      for (var j = row - 1; j >= 0; j--) {
+	        for (var k = 0; k < 10; k++) {
 	          if (boardAsArray[j][k].length > 0) {
-	            let piece = boardAsArray[j][k][0];
+	            var _piece = boardAsArray[j][k][0];
 	            boardAsArray[j][k] = [];
-	            for (let l = 0; l < piece.location.length; l++) {
-	              if (piece.location[l][0] === k * 30 && piece.location[l][1] === j * 30) {
-	                piece.location[l][1] += 30;
-	                boardAsArray[j + 1][k] = [piece];
+	            for (var l = 0; l < _piece.location.length; l++) {
+	              if (_piece.location[l][0] === k * 30 && _piece.location[l][1] === j * 30) {
+	                _piece.location[l][1] += 30;
+	                boardAsArray[j + 1][k] = [_piece];
 	              }
 	            }
 	          }
@@ -458,43 +458,39 @@
 	};
 	
 	Board.prototype.addPiece = function (piece) {
-	  for (let i = 3; i >= 0; i--) {
+	  for (var i = 3; i >= 0; i--) {
 	    if (piece.location[i][1] < 0) {
 	      piece.location.splice(i, 1);
 	      this.over = true;
 	    }
 	  }
 	
-	  piece.location.forEach( block => {
-	    const column = Math.floor(block[0] / 30);
-	    const row    = Math.floor(block[1] / 30);
-	    block[0]     = column * 30;
-	    block[1]     = row * 30;
+	  piece.location.forEach(function (block) {
+	    var column = Math.floor(block[0] / 30);
+	    var row = Math.floor(block[1] / 30);
+	    block[0] = column * 30;
+	    block[1] = row * 30;
 	    boardAsArray[row][column] = [piece];
 	  });
 	};
 	
 	module.exports = Board;
 
-
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const Square = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var Square = function Square(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.RED;
-	  this.location = [
-	    [150, -60],
-	    [120, -60],
-	    [150, -90],
-	    [120, -90]
-	  ];
+	  this.location = [[150, -60], [120, -60], [150, -90], [120, -90]];
 	  this.name = "Square";
-	}
+	};
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
@@ -502,66 +498,66 @@
 	
 	module.exports = Square;
 
-
 /***/ },
 /* 4 */
 /***/ function(module, exports) {
 
-	const PIECE_SIZE = 30;
-	const MOVES = {
-	  LEFT        : "left",
-	  RIGHT       : "right",
-	  DOWN        : "down",
-	  ROTATE_LEFT : "rotate left"
-	}
-	const Piece = function (board) {
-	  this.board    = board.getBoard()
-	  this.set      = false;
-	  this.color    = null;
+	"use strict";
+	
+	var PIECE_SIZE = 30;
+	var MOVES = {
+	  LEFT: "left",
+	  RIGHT: "right",
+	  DOWN: "down",
+	  ROTATE_LEFT: "rotate left"
+	};
+	var Piece = function Piece(board) {
+	  this.board = board.getBoard();
+	  this.set = false;
+	  this.color = null;
 	  this.location = [];
 	};
-	Piece.prototype.move = function(direction) {
+	Piece.prototype.move = function (direction) {
 	  switch (direction) {
 	    case MOVES.RIGHT:
-	      for (let j = 0; j < this.location.length; j++) {
+	      for (var j = 0; j < this.location.length; j++) {
 	        if (this.location[j][0] >= 270 || this.checkColRight()) {
 	          return;
 	        }
 	      }
-	      for (let i = 0; i < this.location.length; i++) {
+	      for (var i = 0; i < this.location.length; i++) {
 	        if (this.location[i][0] <= 270) {
 	          this.location[i][0] += 30;
 	        }
 	      }
-	    break;
+	      break;
 	    case MOVES.LEFT:
-	      for (let j = 0; j < this.location.length; j++) {
-	        if (this.location[j][0] <= 0 || this.checkColLeft()) {
+	      for (var _j = 0; _j < this.location.length; _j++) {
+	        if (this.location[_j][0] <= 0 || this.checkColLeft()) {
 	          return;
 	        }
 	      }
-	      for (let i = 0; i < this.location.length; i++) {
-	        if (this.location[i][0] >= 0) {
-	          this.location[i][0] -= 30;
+	      for (var _i = 0; _i < this.location.length; _i++) {
+	        if (this.location[_i][0] >= 0) {
+	          this.location[_i][0] -= 30;
 	        }
 	      }
 	      break;
-	      case MOVES.DOWN:
-	        for (let j = 0; j < this.location.length; j++) {
-	          if (this.location[j][1] <= 0) {
-	            return;
-	          }
+	    case MOVES.DOWN:
+	      for (var _j2 = 0; _j2 < this.location.length; _j2++) {
+	        if (this.location[_j2][1] <= 0) {
+	          return;
 	        }
-	        for (let i = 0; i < this.location.length; i++) {
-	          this.location[i][1] += 10;
-	        }
-	        break;
+	      }
+	      for (var _i2 = 0; _i2 < this.location.length; _i2++) {
+	        this.location[_i2][1] += 10;
+	      }
+	      break;
 	  }
-	},
-	Piece.prototype.checkColLeft = function () {
-	  for (let i = 0; i < this.location.length; i++) {
-	    let columnLeft  = Math.ceil(this.location[i][0] / 30) - 1;
-	    let row         = Math.ceil(this.location[i][1] / 30);
+	}, Piece.prototype.checkColLeft = function () {
+	  for (var i = 0; i < this.location.length; i++) {
+	    var columnLeft = Math.ceil(this.location[i][0] / 30) - 1;
+	    var row = Math.ceil(this.location[i][1] / 30);
 	    columnLeft < 0 ? columnLeft = 0 : columnLeft;
 	    row < 0 ? row = 0 : row;
 	    if (this.board[row][columnLeft].length > 0) {
@@ -572,8 +568,8 @@
 	  return false;
 	};
 	Piece.prototype.isSpaceTaken = function (block) {
-	  let column = Math.abs(Math.floor(block[0] / 30));
-	  let row    = Math.floor(block[1] / 30);
+	  var column = Math.abs(Math.floor(block[0] / 30));
+	  var row = Math.floor(block[1] / 30);
 	  column > 9 ? column = 9 : column;
 	  row < 0 ? row = 0 : row;
 	
@@ -584,9 +580,9 @@
 	  return false;
 	};
 	Piece.prototype.checkColRight = function () {
-	  for (let i = 0; i < this.location.length; i++) {
-	    let columnRight = Math.ceil(this.location[i][0] / 30) + 1;
-	    let row         = Math.ceil(this.location[i][1] / 30);
+	  for (var i = 0; i < this.location.length; i++) {
+	    var columnRight = Math.ceil(this.location[i][0] / 30) + 1;
+	    var row = Math.ceil(this.location[i][1] / 30);
 	    columnRight > 9 ? columnRight = 9 : columnRight;
 	    row < 0 ? row = 0 : row;
 	    if (this.board[row][columnRight].length > 0) {
@@ -597,76 +593,71 @@
 	  return false;
 	};
 	Piece.prototype.draw = function (ctx) {
-	  this.location.forEach( block => {
+	  var _this = this;
+	
+	  this.location.forEach(function (block) {
 	    ctx.beginPath();
-	    ctx.rect(block[0], block[1], PIECE_SIZE, PIECE_SIZE );
-	    ctx.fillStyle = this.color;
+	    ctx.rect(block[0], block[1], PIECE_SIZE, PIECE_SIZE);
+	    ctx.fillStyle = _this.color;
 	    ctx.fill();
 	    ctx.lineWidth = 1;
 	    ctx.strokeStyle = 'black';
 	    ctx.stroke();
 	  });
 	};
-	Piece.prototype.rotateLeft = function (paused) {
-	
-	};
-	Piece.prototype.rotateRight = function(paused) {
-	
-	};
+	Piece.prototype.rotateLeft = function (paused) {};
+	Piece.prototype.rotateRight = function (paused) {};
 	
 	module.exports = Piece;
-
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	const colorConstants = {
-	  RED    : '#F00',
-	  BLUE   : '#00F',
-	  GREEN  : '#0F0',
-	  YELLOW : '#FFFF00',
-	  PURPLE : '#BF5FFF',
-	  ORANGE : '#FFA500',
-	  PINK   : '#FF69B4'
-	}
+	'use strict';
+	
+	var colorConstants = {
+	  RED: '#F00',
+	  BLUE: '#00F',
+	  GREEN: '#0F0',
+	  YELLOW: '#FFFF00',
+	  PURPLE: '#BF5FFF',
+	  ORANGE: '#FFA500',
+	  PINK: '#FF69B4'
+	};
 	
 	module.exports = colorConstants;
-
 
 /***/ },
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const Line = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var Line = function Line(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.BLUE;
-	  this.location = [
-	    [120, -150],
-	    [120, -120],
-	    [120, -90],
-	    [120, -60]
-	  ];
-	  this.name = "Line"
-	}
+	  this.location = [[120, -150], [120, -120], [120, -90], [120, -60]];
+	  this.name = "Line";
+	};
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	Line.prototype = new Surrogate();
-	Line.prototype.rotateRight = function(paused) {
+	Line.prototype.rotateRight = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []];
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -679,7 +670,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] -= rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -711,7 +702,7 @@
 	
 	    //block is bottom
 	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] + 60) {
-	      this.location[i][0] -= rotation
+	      this.location[i][0] -= rotation;
 	      this.location[i][1] -= rotation;
 	      continue;
 	    }
@@ -719,7 +710,7 @@
 	    //block is left
 	    if (this.location[i][0] === originBlock[0] - 60 && this.location[i][1] === originBlock[1]) {
 	      this.location[i][0] += rotation;
-	      this.location[i][1] -= rotation
+	      this.location[i][1] -= rotation;
 	      continue;
 	    }
 	
@@ -738,7 +729,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -746,16 +737,16 @@
 	};
 	Line.prototype.rotateLeft = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []]
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -768,7 +759,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] += rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -799,7 +790,7 @@
 	
 	    //block is bottom
 	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] + 60) {
-	      this.location[i][0] += rotation
+	      this.location[i][0] += rotation;
 	      this.location[i][1] -= rotation;
 	      continue;
 	    }
@@ -807,7 +798,7 @@
 	    //block is right
 	    if (this.location[i][0] === originBlock[0] + 60 && this.location[i][1] === originBlock[1]) {
 	      this.location[i][0] -= rotation;
-	      this.location[i][1] -= rotation
+	      this.location[i][1] -= rotation;
 	      continue;
 	    }
 	
@@ -826,7 +817,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -835,41 +826,37 @@
 	
 	module.exports = Line;
 
-
 /***/ },
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const LeftL = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var LeftL = function LeftL(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.GREEN;
-	  this.location = [
-	    [120, -120],
-	    [120, -90],
-	    [120, -60],
-	    [90, -60]
-	  ];
+	  this.location = [[120, -120], [120, -90], [120, -60], [90, -60]];
 	  this.name = "LeftL";
-	}
+	};
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	LeftL.prototype = new Surrogate();
-	LeftL.prototype.rotateLeft = function(paused) {
+	LeftL.prototype.rotateLeft = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []];
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -882,7 +869,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] -= rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -937,7 +924,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -945,16 +932,16 @@
 	};
 	LeftL.prototype.rotateRight = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []]
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -967,7 +954,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] += rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1021,7 +1008,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1029,41 +1016,37 @@
 	};
 	module.exports = LeftL;
 
-
 /***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const RightL = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var RightL = function RightL(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.PURPLE;
-	  this.location = [
-	    [120, -120],
-	    [120, -90],
-	    [120, -60],
-	    [150, -60]
-	  ];
+	  this.location = [[120, -120], [120, -90], [120, -60], [150, -60]];
 	  this.name = "RightL";
-	}
+	};
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	RightL.prototype = new Surrogate();
-	RightL.prototype.rotateRight = function(paused) {
+	RightL.prototype.rotateRight = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []];
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1076,7 +1059,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] -= rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1131,7 +1114,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1139,16 +1122,16 @@
 	};
 	RightL.prototype.rotateLeft = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []]
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1161,7 +1144,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] += rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1215,7 +1198,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1223,41 +1206,37 @@
 	};
 	module.exports = RightL;
 
-
 /***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const LeftZ = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var LeftZ = function LeftZ(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.YELLOW;
-	  this.location = [
-	    [90, -90],
-	    [120, -90],
-	    [120, -60],
-	    [150, -60]
-	  ];
+	  this.location = [[90, -90], [120, -90], [120, -60], [150, -60]];
 	  this.name = "LeftZ";
-	}
+	};
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	LeftZ.prototype = new Surrogate();
-	LeftZ.prototype.rotateLeft = function(paused) {
+	LeftZ.prototype.rotateLeft = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []];
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1270,7 +1249,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] -= rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1325,7 +1304,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1333,16 +1312,16 @@
 	};
 	LeftZ.prototype.rotateRight = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []]
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1355,7 +1334,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] += rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1409,7 +1388,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1417,41 +1396,37 @@
 	};
 	module.exports = LeftZ;
 
-
 /***/ },
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const RightZ = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var RightZ = function RightZ(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.ORANGE;
-	  this.location = [
-	    [150, -90],
-	    [120, -90],
-	    [120, -60],
-	    [90, -60]
-	  ];
+	  this.location = [[150, -90], [120, -90], [120, -60], [90, -60]];
 	  this.name = "RightZ";
-	}
+	};
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	RightZ.prototype = new Surrogate();
-	RightZ.prototype.rotateRight = function(paused) {
+	RightZ.prototype.rotateRight = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []];
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1464,7 +1439,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] -= rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1519,7 +1494,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1527,16 +1502,16 @@
 	};
 	RightZ.prototype.rotateLeft = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []]
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1549,7 +1524,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] += rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1603,7 +1578,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1611,41 +1586,37 @@
 	};
 	module.exports = RightZ;
 
-
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const Piece          = __webpack_require__(4);
-	const colorConstants = __webpack_require__(5);
+	'use strict';
 	
-	const Tee = function (board) {
+	var Piece = __webpack_require__(4);
+	var colorConstants = __webpack_require__(5);
+	
+	var Tee = function Tee(board) {
 	  Piece.call(this, board);
 	  this.color = colorConstants.PINK;
-	  this.location = [
-	    [120, -90],
-	    [120, -60],
-	    [150, -60],
-	    [90, -60]
-	  ];
+	  this.location = [[120, -90], [120, -60], [150, -60], [90, -60]];
 	  this.name = "Tee";
-	}
+	};
 	
 	function Surrogate() {};
 	Surrogate.prototype = Piece.prototype;
 	Tee.prototype = new Surrogate();
-	Tee.prototype.rotateLeft = function(paused) {
+	Tee.prototype.rotateLeft = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []];
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1655,7 +1626,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] -= rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1683,7 +1654,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1691,16 +1662,16 @@
 	};
 	Tee.prototype.rotateRight = function (paused) {
 	  if (paused) return;
-	  const originBlock      = this.location[1];
-	  const originalLocation = [[], [], [], []]
-	  for (let k = 0; k < this.location.length; k++) {
-	    for (let l = 0; l < 2; l++) {
+	  var originBlock = this.location[1];
+	  var originalLocation = [[], [], [], []];
+	  for (var k = 0; k < this.location.length; k++) {
+	    for (var l = 0; l < 2; l++) {
 	      originalLocation[k][l] = this.location[k][l];
 	    }
 	  }
 	
-	  for (let i = 0; i < this.location.length; i ++) {
-	    let rotation;
+	  for (var i = 0; i < this.location.length; i++) {
+	    var rotation = void 0;
 	    switch (i) {
 	      case 1:
 	        rotation = 0;
@@ -1710,7 +1681,7 @@
 	    }
 	
 	    //block is above originBlock
-	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30 ) {
+	    if (this.location[i][0] === originBlock[0] && this.location[i][1] === originBlock[1] - 30) {
 	      this.location[i][0] += rotation;
 	      this.location[i][1] += rotation;
 	      continue;
@@ -1737,7 +1708,7 @@
 	    }
 	  }
 	
-	  for (let j = 0; j < this.location.length; j++) {
+	  for (var j = 0; j < this.location.length; j++) {
 	    if (this.isSpaceTaken(this.location[j])) {
 	      this.location = originalLocation;
 	    }
@@ -1745,36 +1716,50 @@
 	};
 	module.exports = Tee;
 
-
 /***/ },
 /* 12 */
 /***/ function(module, exports) {
 
-	const GameView = function (game, ctx) {
+	'use strict';
+	
+	var GameView = function GameView(game, ctx) {
 	  this.ctx = ctx;
 	  this.game = game;
 	};
 	
 	GameView.MOVES = {
-	  'a' : 'left',
-	  's' : 'down',
-	  'd' : 'right',
+	  'a': 'left',
+	  's': 'down',
+	  'd': 'right'
 	};
 	
-	
 	GameView.prototype.bindKeyHandlers = function () {
+	  var _this = this;
+	
 	  if (this.game.menu === 'main') {
-	    key('s', () => { this.game.removeMainMenu(); });
+	    key('s', function () {
+	      _this.game.removeMainMenu();
+	    });
 	  }
 	
-	  Object.keys(GameView.MOVES).forEach( k => {
-	    let direction = GameView.MOVES[k];
-	    key(k, () => { this.game.pieces[this.game.pieces.length - 1].move(direction); });
+	  Object.keys(GameView.MOVES).forEach(function (k) {
+	    var direction = GameView.MOVES[k];
+	    key(k, function () {
+	      _this.game.pieces[_this.game.pieces.length - 1].move(direction);
+	    });
 	  });
-	  key('r', () => { this.replay(); });
-	  key('p', () => { this.game.togglePause(); });
-	  key('q', () => { this.game.pieces[this.game.pieces.length - 1].rotateLeft(this.game.paused); });
-	  key('e', () => { this.game.pieces[this.game.pieces.length - 1].rotateRight(this.game.paused); });
+	  key('r', function () {
+	    _this.replay();
+	  });
+	  key('p', function () {
+	    _this.game.togglePause();
+	  });
+	  key('q', function () {
+	    _this.game.pieces[_this.game.pieces.length - 1].rotateLeft(_this.game.paused);
+	  });
+	  key('e', function () {
+	    _this.game.pieces[_this.game.pieces.length - 1].rotateRight(_this.game.paused);
+	  });
 	};
 	
 	GameView.prototype.replay = function () {
@@ -1788,18 +1773,17 @@
 	  requestAnimationFrame(this.animate.bind(this));
 	};
 	
-	GameView.prototype.animate = function(time) {
-	  const timeDelta = time - this.lastTime;
+	GameView.prototype.animate = function (time) {
+	  var timeDelta = time - this.lastTime;
 	
 	  this.game.step(timeDelta, this.ctx);
 	  this.game.draw(this.ctx);
-	  this.lastTime = time
+	  this.lastTime = time;
 	
 	  requestAnimationFrame(this.animate.bind(this));
 	};
 	
 	module.exports = GameView;
-
 
 /***/ }
 /******/ ]);
