@@ -3,12 +3,8 @@ html {
 }
 
 body {
-  font-family : sans-serif;
-  background-color: #935d8c;
-  background-image: url("img/overlay.png"), -moz-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
-  background-image: url("img/overlay.png"), -webkit-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
-  background-image: url("img/overlay.png"), -ms-linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
-  background-image: url("img/overlay.png"), linear-gradient(45deg, #e37682 15%, #5f4d93 85%);
+  font-family : 'Press Start 2P', cursive;
+  background-color: black;
 }
 
 h3 {
@@ -17,44 +13,58 @@ h3 {
 
 main {
   width: 537px;
+  height: 636px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
-
 }
 main:after {
   content: " ";
   display: block;
   clear  : both;
 }
-#canvas, #next-piece, .score {
-  float: left;
-  text-align: center;
+#canvas, .score, .bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+
 }
 .score {
-  width: 200px;
-  padding-left: 35px;
+  width: 100px;
+  text-align: center;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+}
+.score h3 {
+  margin-bottom: 5px;
 }
 #next-piece {
   width: 150px;
-  margin-left: 23px;
+  border: 5px solid transparent;
+  background: #FAFAFA;
+  border-image: url("../img/brick-border.png") 48% repeat;
 }
 .next-piece {
   text-align: center;
   width: 200px;
-  float: left;
-  padding-left: 35px;
   height: 200px;
+  position: absolute;
+  left: 85%;
+  transform: translateX(-15%);
 }
 #volume {
+  color: black;
   cursor: pointer;
   position: absolute;
-  bottom: 0px;
-  right: 159px;
+  top: 40px;
+  left: -47px;
+  padding: 5px 0;
 }
-.muted {
-  right: 139px !important;
+#volume.muted {
+  left: -60px;
 }
 .fa-stack {
   width: 1em;
@@ -85,4 +95,8 @@ main:after {
   float: left;
   padding-left: 35px;
   height: 200px;
+}
+.next-piece h3 {
+  margin-top: 10px;
+  padding-left: 10px;
 }

@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <title>Tetris.js</title>
     <script src="https://use.fontawesome.com/9d43f0056a.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <link rel="stylesheet" href="./css/main.css" media="screen" title="no title" charset="utf-8">
   </head>
   <body>
     <main>
+      <img src="./img/bg.png" class="bg">
       <canvas id="canvas" width="300" height="600" style="border: 1px solid black"></canvas>
       <div class="next-piece">
         <h3>NE​‌ЖT PIECE</h3>
@@ -17,7 +19,7 @@
         <h3>SCOЯE</h3>
         <span id="score">0</span>
       </div>
-      <p id="volume"><i class="fa fa-music"></i>&nbsp; &nbsp;Mute</p>
+      <p id="volume"><i class="fa fa-music"></i> Mute</p>
     </main>
     <audio id="theme" loop autoplay>
       <source src="./files/theme.mp3" type="audio/mpeg">
