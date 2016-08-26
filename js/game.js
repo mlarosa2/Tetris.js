@@ -19,7 +19,7 @@ const Game = function () {
   this.menu      = 'main';
 };
 
-Game.BG_COLOR         = '#FFFFFF';
+Game.BG_COLOR         = '#FAFAFA';
 Game.DIM_X            = 300;
 Game.DIM_Y            = 600;
 Game.FALL_RATE        = 2;
@@ -32,55 +32,55 @@ Game.prototype.togglePause = function () {
 Game.prototype.renderPausedMenu = function (ctx) {
   ctx.beginPath();
   ctx.rect(50, 200, 200, 100 );
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = Game.BG_COLOR;
   ctx.fill();
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'black';
   ctx.stroke();
-  ctx.font = '30px sans-serif';
+  ctx.font = "18px 'Press Start 2P'";
   ctx.strokeStyle = 'black';
   ctx.fillStyle = 'red';
-  ctx.strokeText('PAUSED', 90, 260);
-  ctx.fillText('PAUSED', 90, 260);
+  ctx.strokeText('PAUSED', 95, 260);
+  ctx.fillText('PAUSED', 95, 260);
 };
 
 Game.prototype.renderGameOverMenu = function (ctx) {
   ctx.beginPath();
   ctx.rect(50, 200, 200, 100 );
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = Game.BG_COLOR;
   ctx.fill();
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'black';
   ctx.stroke();
-  ctx.font = '30px sans-serif';
+  ctx.font = "18px 'Press Start 2P'";
   ctx.strokeStyle = 'black';
   ctx.fillStyle = 'red';
-  ctx.strokeText('Game Over', 72, 250);
-  ctx.fillText('Game Over', 72, 250);
-  ctx.font = '15px sans-serif';
+  ctx.strokeText('Game Over', 67, 250);
+  ctx.fillText('Game Over', 67, 250);
+  ctx.font = "8px 'Press Start 2P'";
   ctx.fillStyle = 'black';
-  ctx.fillText('Press "r" to replay.', 93, 275);
+  ctx.fillText('Press "r" to replay.', 73, 275);
 };
 
 Game.prototype.renderMainMenu = function (ctx) {
   if (this.menu !== "main") return;
   ctx.beginPath();
   ctx.rect(50, 200, 200, 150);
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = Game.BG_COLOR;
   ctx.fill();
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'black';
   ctx.stroke();
-  ctx.font = '30px sans-serif';
+  ctx.font = "18px 'Press Start 2P'";
   ctx.strokeStyle = 'black';
   ctx.fillStyle = 'red';
-  ctx.strokeText('TETЯIS.JS', 75, 250);
-  ctx.fillText('TETЯIS.JS', 75, 250);
-  ctx.font = '15px sans-serif';
+  ctx.strokeText('TETЯIS.JS', 70, 250);
+  ctx.fillText('TETЯIS.JS', 70, 250);
+  ctx.font = "8px 'Press Start 2P'";
   ctx.fillStyle = 'black';
-  ctx.fillText('Press "s" to start.', 93, 275);
-  ctx.fillText('wasd - direction', 95, 300);
-  ctx.fillText('q/e - rotate left/right', 85, 325);
+  ctx.fillText('Press "s" to start.', 83, 275);
+  ctx.fillText('wasd - direction', 90, 300);
+  ctx.fillText('q/e - rotate left/right', 58, 325);
 };
 
 Game.prototype.removeMainMenu = function () {
