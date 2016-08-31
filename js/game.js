@@ -228,6 +228,9 @@ Game.prototype.renderHiScoreMenu = function () {
     if (initials.length > 3) {
       initials = initials.slice(0, 3).toUpperCase();
     }
+    if (initials.length === 0) {
+      initials = "???";
+    }
     if (thisGame.score >= thisGame.allScores[0][1]) {
       thisGame.allScores.unshift([initials, thisGame.score]);
     } else if (thisGame.score < this.allScores[1][1]) {
