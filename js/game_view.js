@@ -33,6 +33,25 @@ GameView.prototype.replay = function () {
 GameView.prototype.start = function () {
   this.bindKeyHandlers();
   this.lastTime = 0;
+  const dbRefObject = firebase.database().ref();
+
+  dbRefObject.on("value", function(snapshot) {
+    let list = document.getElementById("hi-list");
+    let scoreLi = "";
+    if (snapshot.val()) {
+      let scores = snapshot.val().scores;
+      for (let score in scores) {
+        if (scores.hasOwnProperty(score)) {
+          let initials = Object.keys(scores[score])[0];
+          scoreLi += "<li>";
+          scoreLi += `${initials}:${scores[score][initials]}`;
+          scoreLi += "</li>";
+        }
+      }
+    }
+    list.innerHTML = scoreLi;
+  });
+
   requestAnimationFrame(this.animate.bind(this));
 };
 

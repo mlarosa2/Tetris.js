@@ -4,11 +4,17 @@ html {
 
 body {
   font-family : 'Press Start 2P', cursive;
+  font-weight: 400;
+  font-style: normal;
   background-color: black;
 }
 
 h3 {
   font-weight: 400;
+}
+
+.hide {
+  display: none;
 }
 
 main {
@@ -41,11 +47,27 @@ main:after {
 .score h3 {
   margin-bottom: 5px;
 }
+.high-scores {
+  position: absolute;
+  left: -217px;
+}
+.high-scores h3 {
+  margin-top: 10px;
+  margin-bottom: 0;
+  text-align: center;
+}
+#hi-list {
+  padding-left: 0;
+  list-style: none;
+}
+#hi-list li {
+  margin-bottom: 5px;
+}
 #next-piece {
   width: 150px;
   border: 5px solid transparent;
   background: #FAFAFA;
-  border-image: url("../img/brick-border.png") 48% repeat;
+  border-image: url("../../tetris_assets/img/brick-border.png") 48% repeat;
 }
 .next-piece {
   text-align: center;
@@ -99,4 +121,25 @@ main:after {
 .next-piece h3 {
   margin-top: 10px;
   padding-left: 10px;
+}
+
+#enter-score {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  text-align: center;
+  z-index: 1;
+  padding: 10px;
+  background: #FAFAFA;
+  border-image: url("../../tetris_assets/img/brick-border.png") 48% repeat;
+}
+#enter-score h1 {
+  margin-top: 0;
+}
+
+#initials {
+  font-family: 'Press Start 2P', cursive;
+  width: 34px;
+  padding: 5px;
 }

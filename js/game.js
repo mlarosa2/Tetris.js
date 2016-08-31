@@ -10,13 +10,15 @@ const Tee    = require('./pieces/t');
 const NUM_PIECES = 7
 
 const Game = function () {
-  this.board     = new Board();
-  this.pieces    = [];
-  this.score     = 0;
-  this.paused    = false;
-  this.nextPiece = [];
-  this.score     = 0;
-  this.menu      = 'main';
+  this.board       = new Board();
+  this.pieces      = [];
+  this.score       = 0;
+  this.paused      = false;
+  this.nextPiece   = [];
+  this.score       = 0;
+  this.menu        = 'main';
+  this.setInitials = false;
+  this.allScores   = [];
 };
 
 Game.BG_COLOR         = '#FAFAFA';
@@ -184,9 +186,92 @@ Game.prototype.movePiece = function (delta) {
 };
 
 Game.prototype.checkForGameOver = function () {
-  if (this.board.isOver()) {
+
+  if (this.board.isOver() && this.score >= this.lowestHighScore() && !this.setInitials) {
+    this.menu = 'over';
+    if (this.allScores.length === 0) {
+      this.setAllScores();
+      this.renderHiScoreMenu();
+    }
+  } else if (this.board.isOver()) {
     this.menu = 'over';
   }
+};
+
+Game.prototype.setAllScores = function () {
+  const menu = document.getElementById("enter-score");
+  const dbRefObject = firebase.database().ref();
+  const thisGame = this;
+  dbRefObject.on("value", function(snapshot) {
+    if (snapshot.val()) {
+      let scores = snapshot.val().scores;
+      for (let score in scores) {
+        if (scores.hasOwnProperty(score)) {
+          let initials = Object.keys(scores[score])[0];
+          thisGame.allScores.push([initials, scores[score][initials]]);
+        }
+      }
+    }
+  });
+
+  thisGame.allScores.pop();
+  menu.className = "";
+};
+
+Game.prototype.renderHiScoreMenu = function () {
+  const menu = document.getElementById("enter-score");
+  const submitHi = document.getElementById("submit");
+  const thisGame = this;
+  submitHi.addEventListener('click', (e) => {
+    e.preventDefault();
+    let initials = document.getElementById("initials").value;
+    if (initials.length > 3) {
+      initials = initials.slice(0, 3).toUpperCase();
+    }
+    if (thisGame.score >= thisGame.allScores[0][1]) {
+      thisGame.allScores.unshift([initials, thisGame.score]);
+    } else if (thisGame.score < this.allScores[1][1]) {
+      thisGame.allScores.push([initials, thisGame.score]);
+    } else {
+      let last = thisGame.allScores.pop();
+      thisGame.allScores.push([initials, thisGame.score]);
+      thisGame.allScores.push(last);
+    }
+    const one = {};
+    const two = {};
+    const three = {};
+
+    one[thisGame.allScores[0][0]] = thisGame.allScores[0][1];
+    two[thisGame.allScores[1][0]] = thisGame.allScores[1][1];
+    three[thisGame.allScores[2][0]] = thisGame.allScores[2][1];
+    firebase.database().ref().child('scores').set({});
+    firebase.database().ref().child('scores').push(one);
+    firebase.database().ref().child('scores').push(two);
+    firebase.database().ref().child('scores').push(three);
+    menu.className = "hide";
+    thisGame.setInitials = true;
+    thisGame.menu = 'over';
+    thisGame.allScores = [];
+  });
+};
+
+Game.prototype.lowestHighScore = function () {
+  const dbRefObject = firebase.database().ref();
+  const allScores = [];
+
+  const low = dbRefObject.on("value", function(snapshot) {
+    if (snapshot.val()) {
+      let scores = snapshot.val().scores;
+      for (let score in scores) {
+        if (scores.hasOwnProperty(score)) {
+          let initials = Object.keys(scores[score])[0];
+          allScores.push(scores[score][initials]);
+        }
+      }
+    }
+  });
+  dbRefObject.off("value", low);
+  return Math.min.apply(Math, allScores);
 };
 
 Game.prototype.reset = function (ctx) {
@@ -196,6 +281,7 @@ Game.prototype.reset = function (ctx) {
   Game.OriginalFallRate = 2;
   this.score            = 0;
   this.nextPiece        = [];
+  this.setInitials      = false;
   this.setScore();
   this.board.reset();
 };
