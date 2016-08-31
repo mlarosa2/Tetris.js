@@ -67,7 +67,7 @@ main:after {
   width: 150px;
   border: 5px solid transparent;
   background: #FAFAFA;
-  border-image: url("../../tetris_assets/img/brick-border.png") 48% repeat;
+  border-image: url("../img/brick-border.png") 48% repeat;
 }
 .next-piece {
   text-align: center;
@@ -132,7 +132,8 @@ main:after {
   z-index: 1;
   padding: 10px;
   background: #FAFAFA;
-  border-image: url("../../tetris_assets/img/brick-border.png") 48% repeat;
+  border: 13px solid transparent;
+  border-image: url("../img/brick-border.png") 48% repeat;
 }
 #enter-score h1 {
   margin-top: 0;
