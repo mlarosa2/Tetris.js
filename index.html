@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="./css/main.css" media="screen" title="no title" charset="utf-8">
   </head>
   <body>
+    <div class="hide" id="enter-score">
+      <h1>Congrats товaрищ! You got a high score!</h1>
+      <p>Please enter your initials below.</p>
+      <form>
+        <input type="text" id="initials">
+        <a id="submit">SUBMIT</a>
+      </form>
+    </div>
     <main>
       <img src="./img/bg.png" class="bg">
       <canvas id="canvas" width="300" height="600" style="border: 1px solid black"></canvas>
@@ -24,6 +32,21 @@
     <audio id="theme" loop autoplay>
       <source src="./files/theme.mp3" type="audio/mpeg">
     </audio>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAeX166-2Pw6Fn_WKAwN4NJPQL1CPTyFSg",
+        authDomain: "tetrisjs-9132d.firebaseapp.com",
+        databaseURL: "https://tetrisjs-9132d.firebaseio.com",
+        storageBucket: "",
+      };
+      firebase.initializeApp(config);
+      //seeds
+      // firebase.database().ref().child('scores').set({});
+      // firebase.database().ref().child('scores').push({"JS": 300});
+      // firebase.database().ref().child('scores').push({"LT": 200});
+      // firebase.database().ref().child('scores').push({"VL": 100});
+    </script>
     <script type="text/javascript" src="./js/vendor/keymaster.js"></script>
     <script type="text/javascript" src="bundle.js"></script>
   </body>

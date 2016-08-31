@@ -139,6 +139,15 @@ main:after {
   margin-top: 0;
 }
 
+#submit {
+  cursor: pointer;
+}
+
+#submit:hover, #submit:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
 #initials {
   font-family: 'Press Start 2P', cursive;
   width: 34px;
